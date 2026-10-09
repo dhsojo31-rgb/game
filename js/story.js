@@ -65,7 +65,7 @@ export function renderIntro(root, ctx) {
 
 export function notebookHTML(clues) {
   return `<div class="notebook" aria-label="단서 수첩">
-    ${['blue', 'star', 'box'].map(k => clues.includes(k)
+    ${['blue', 'star', 'box', 'map'].map(k => clues.includes(k)
       ? `<div class="slotc got">${clueSVG(k)}<span>${CLUES[k].name}</span></div>`
       : `<div class="slotc"><span style="font-size:40px">?</span><span>아직</span></div>`).join('')}
   </div>`;
@@ -75,12 +75,12 @@ export function renderClue(root, ctx) {
   const c = CLUES[ctx.clueKey];
   root.innerHTML = `
     <section class="screen center clue-screen">
-      <h2 style="color:var(--brown);margin:0">${ctx.clueKey === 'box' ? '마지막 단서' : ctx.clueKey === 'star' ? '두 번째 단서' : '첫 단서'}</h2>
+      <h2 style="color:var(--brown);margin:0">${ctx.clueKey === 'map' ? '마지막 단서' : ctx.clueKey === 'box' ? '세 번째 단서' : ctx.clueKey === 'star' ? '두 번째 단서' : '첫 단서'}</h2>
       <div class="clue-big">${clueSVG(ctx.clueKey)}</div>
       <p class="sub" style="font-weight:700">${c.item}을(를) 찾았어요!</p>
       <div class="moa-say">${moaSVG()}<div class="bubble">${c.line}</div></div>
       ${notebookHTML(ctx.clues)}
-      <div class="btn-row sticky-next"><button class="btn primary" id="btn-next">${ctx.clueKey === 'box' ? '열쇠 찾으러 가기' : '다음 단서 찾기'}</button></div>
+      <div class="btn-row sticky-next"><button class="btn primary" id="btn-next">${ctx.clueKey === 'map' ? '열쇠 찾으러 가기' : '다음 단서 찾기'}</button></div>
     </section>`;
   root.querySelector('#btn-next').addEventListener('click', ctx.onNext);
 }
@@ -92,8 +92,8 @@ export function renderEnding(root, ctx) {
   root.innerHTML = `
     <section class="screen center">
       <h2 style="color:var(--brown);margin:0">사건 해결</h2>
-      ${notebookHTML(['blue', 'star', 'box'])}
-      <div class="moa-say">${moaSVG()}<div class="bubble" id="bubble">“별이 붙은 파란 상자! 열쇠가 그 안에 있겠어!”</div></div>
+      ${notebookHTML(['blue', 'star', 'box', 'map'])}
+      <div class="moa-say">${moaSVG()}<div class="bubble" id="bubble">“책장 아래, 별이 붙은 파란 상자! 열쇠가 그 안에 있겠어!”</div></div>
       <button class="box-btn" id="box" aria-label="별이 붙은 파란 상자 열기">${endingSceneSVG(st.opened ? 'open' : 'closed')}</button>
       <div id="celebrate"></div>
     </section>`;

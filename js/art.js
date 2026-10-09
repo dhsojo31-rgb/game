@@ -16,10 +16,18 @@ export function moaSVG(cls = 'moa') {
 export const CLUES = {
   blue: { key: 'blue', name: '파란색', item: '파란 리본', line: '첫 단서야! 열쇠가 있는 곳은 파란색인가 봐.' },
   star: { key: 'star', name: '별', item: '별 모양 쪽지', line: '두 번째 단서는 별이야!' },
-  box: { key: 'box', name: '상자', item: '상자 그림 쪽지', line: '마지막 단서는 상자야!' },
+  box: { key: 'box', name: '상자', item: '상자 그림 쪽지', line: '세 번째 단서는 상자야!' },
+  map: { key: 'map', name: '지도', item: '지도 쪽지', line: '마지막 단서는 지도야! 상자는 큰 책장 아래에 있대.' },
 };
 
 export function clueSVG(key) {
+  if (key === 'map') return `<svg viewBox="0 0 120 120" role="img" aria-label="지도 쪽지">
+    <path d="M16 30l30-10 28 10 30-10v70l-30 10-28-10-30 10z" fill="#fff7d6" stroke="#6b4423" stroke-width="4" stroke-linejoin="round"/>
+    <path d="M46 20v70M74 30v70" stroke="#c9a56a" stroke-width="3"/>
+    <path d="M26 70q14-18 30-6t30-14" fill="none" stroke="#2f6fde" stroke-width="4" stroke-dasharray="6 5" stroke-linecap="round"/>
+    <rect x="30" y="40" width="18" height="12" fill="#c8893a" stroke="#6b4423" stroke-width="2"/>
+    <path d="M86 54l-8-14h16z" fill="#d9534f" stroke="#6b4423" stroke-width="2"/><path d="M80 44l6 6 6-6" stroke="#6b4423" stroke-width="2" fill="none"/>
+  </svg>`;
   if (key === 'blue') return `<svg viewBox="0 0 120 120" role="img" aria-label="파란 리본">
     <path d="M20 40q40-30 80 0l-10 60q-30-12-60 0z" fill="#2f6fde" stroke="#1f4fa8" stroke-width="4" stroke-linejoin="round"/>
     <path d="M60 40v60" stroke="#1f4fa8" stroke-width="3"/>

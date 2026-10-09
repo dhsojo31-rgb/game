@@ -1,29 +1,161 @@
 {
-  "version": 3,
-  "note": "사용자가 제공한 실제 책 표지. 제목·저자는 표지에 적힌 글자를 읽어 적었으며, authorConfirmed=false 항목은 운영자가 확인해야 한다.",
+  "version": 4,
+  "note": "사용자가 제공한 실제 책 표지. 제목·저자는 운영자가 확인한 정보다(2026-10-09).",
   "books": [
-    { "id": "bk-01", "file": "covers/cover01.jpg", "title": "알사탕", "author": "백희나 글·그림", "authorConfirmed": true },
-    { "id": "bk-02", "file": "covers/cover02.jpg", "title": "엄마가 유령이 되었어!", "author": "노부미 글·그림", "authorConfirmed": true },
-    { "id": "bk-03", "file": "covers/cover03.jpg", "title": "브로콜리지만 사랑받고 싶어: 두 번째 이야기", "author": "달다름 글, 서영 그림", "authorConfirmed": false },
-    { "id": "bk-04", "file": "covers/cover04.jpg", "title": "끝까지 해 보자, 때밀이 장갑!", "author": "유설화 글·그림", "authorConfirmed": true },
-    { "id": "bk-05", "file": "covers/cover05.jpg", "title": "고구마구마", "author": "사이다 글·그림", "authorConfirmed": false },
-    { "id": "bk-06", "file": "covers/cover06.jpg", "title": "우리 반 회장이 사라졌다", "author": "김근혜 글, 임나운 그림", "authorConfirmed": true },
-    { "id": "bk-07", "file": "covers/cover07.jpg", "title": "몬스터 캠핑장", "author": "", "authorConfirmed": false },
-    { "id": "bk-08", "file": "covers/cover08.jpg", "title": "무지개 목욕탕", "author": "강효미 글, 밤코 그림", "authorConfirmed": true },
-    { "id": "bk-09", "file": "covers/cover09.jpg", "title": "오싹오싹 친구들! 공포의 편도선", "author": "애런 레이놀즈 글, 피터 브라운 그림, 홍연미 옮김", "authorConfirmed": true },
-    { "id": "bk-10", "file": "covers/cover10.jpg", "title": "오싹오싹 친구들! 끔찍한 샐러드", "author": "애런 레이놀즈 글, 피터 브라운 그림, 홍연미 옮김", "authorConfirmed": true },
-    { "id": "bk-11", "file": "covers/cover11.jpg", "title": "장군이네 떡집", "author": "김리리 글, 이승현 그림", "authorConfirmed": true },
-    { "id": "bk-12", "file": "covers/cover12.jpg", "title": "진짜 일 학년 책가방을 지켜라!", "author": "신순재 글, 안은진 그림", "authorConfirmed": true },
-    { "id": "bk-13", "file": "covers/cover13.jpg", "title": "친구 자판기", "author": "조경희 글·그림", "authorConfirmed": false },
-    { "id": "bk-14", "file": "covers/cover14.jpg", "title": "낭만 강아지 봉봉", "author": "홍민정 글, 김무연 그림", "authorConfirmed": true },
-    { "id": "bk-15", "file": "covers/cover15.jpg", "title": "꽝 없는 뽑기 기계", "author": "곽유진 글, 차상미 그림", "authorConfirmed": true },
-    { "id": "bk-16", "file": "covers/cover16.jpg", "title": "강남 사장님", "author": "이지음 글, 국민지 그림", "authorConfirmed": true },
-    { "id": "bk-17", "file": "covers/cover17.jpg", "title": "괜찮아, 우리 모두 처음이야!", "author": "이주희 글·그림", "authorConfirmed": false },
-    { "id": "bk-18", "file": "covers/cover18.jpg", "title": "단 하루! 시간을 배송하는 하늘 택배", "author": "김경미 글, 김무연 그림", "authorConfirmed": true },
-    { "id": "bk-19", "file": "covers/cover19.jpg", "title": "오싹오싹 친구들! 섬뜩한 코바늘", "author": "애런 레이놀즈 글, 피터 브라운 그림, 홍연미 옮김", "authorConfirmed": false },
-    { "id": "bk-20", "file": "covers/cover20.jpg", "title": "흔한 남매 23", "author": "백난도 글, 유난희 그림 (원작 흔한남매)", "authorConfirmed": true },
-    { "id": "bk-21", "file": "covers/cover21.jpg", "title": "에그박사 19", "author": "박송이 글, 홍종현 그림 (원작 에그박사)", "authorConfirmed": true },
-    { "id": "bk-22", "file": "covers/cover22.jpg", "title": "내 멋대로 친구 뽑기", "author": "최은옥 글, 김무연 그림", "authorConfirmed": true }
+    {
+      "id": "bk-01",
+      "file": "covers/cover01.jpg",
+      "title": "알사탕",
+      "author": "백희나 글·그림",
+      "authorConfirmed": true
+    },
+    {
+      "id": "bk-02",
+      "file": "covers/cover02.jpg",
+      "title": "엄마가 유령이 되었어!",
+      "author": "노부미 글·그림",
+      "authorConfirmed": true
+    },
+    {
+      "id": "bk-03",
+      "file": "covers/cover03.jpg",
+      "title": "브로콜리지만 사랑받고 싶어: 두 번째 이야기",
+      "author": "달다름 글, 서영 그림",
+      "authorConfirmed": true
+    },
+    {
+      "id": "bk-04",
+      "file": "covers/cover04.jpg",
+      "title": "끝까지 해 보자, 때밀이 장갑!",
+      "author": "유설화 글·그림",
+      "authorConfirmed": true
+    },
+    {
+      "id": "bk-05",
+      "file": "covers/cover05.jpg",
+      "title": "고구마랑깨",
+      "author": "사이다 글·그림",
+      "authorConfirmed": true
+    },
+    {
+      "id": "bk-06",
+      "file": "covers/cover06.jpg",
+      "title": "우리 반 회장이 사라졌다",
+      "author": "김근혜 글, 임나운 그림",
+      "authorConfirmed": true
+    },
+    {
+      "id": "bk-07",
+      "file": "covers/cover07.jpg",
+      "title": "몬스터 캠핑장",
+      "author": "정주영 글",
+      "authorConfirmed": true
+    },
+    {
+      "id": "bk-08",
+      "file": "covers/cover08.jpg",
+      "title": "무지개 목욕탕",
+      "author": "강효미 글, 밤코 그림",
+      "authorConfirmed": true
+    },
+    {
+      "id": "bk-09",
+      "file": "covers/cover09.jpg",
+      "title": "오싹오싹 친구들! 공포의 편도선",
+      "author": "애런 레이놀즈 글, 피터 브라운 그림, 홍연미 옮김",
+      "authorConfirmed": true
+    },
+    {
+      "id": "bk-10",
+      "file": "covers/cover10.jpg",
+      "title": "오싹오싹 친구들! 끔찍한 샐러드",
+      "author": "애런 레이놀즈 글, 피터 브라운 그림, 홍연미 옮김",
+      "authorConfirmed": true
+    },
+    {
+      "id": "bk-11",
+      "file": "covers/cover11.jpg",
+      "title": "장군이네 떡집",
+      "author": "김리리 글, 이승현 그림",
+      "authorConfirmed": true
+    },
+    {
+      "id": "bk-12",
+      "file": "covers/cover12.jpg",
+      "title": "진짜 일 학년 책가방을 지켜라!",
+      "author": "신순재 글, 안은진 그림",
+      "authorConfirmed": true
+    },
+    {
+      "id": "bk-13",
+      "file": "covers/cover13.jpg",
+      "title": "친구 자판기",
+      "author": "조경희 글·그림",
+      "authorConfirmed": true
+    },
+    {
+      "id": "bk-14",
+      "file": "covers/cover14.jpg",
+      "title": "낭만 강아지 봉봉",
+      "author": "홍민정 글, 김무연 그림",
+      "authorConfirmed": true
+    },
+    {
+      "id": "bk-15",
+      "file": "covers/cover15.jpg",
+      "title": "꽝 없는 뽑기 기계",
+      "author": "곽유진 글, 차상미 그림",
+      "authorConfirmed": true
+    },
+    {
+      "id": "bk-16",
+      "file": "covers/cover16.jpg",
+      "title": "강남 사장님",
+      "author": "이지음 글, 국민지 그림",
+      "authorConfirmed": true
+    },
+    {
+      "id": "bk-17",
+      "file": "covers/cover17.jpg",
+      "title": "괜찮아, 우리 모두 처음이야!",
+      "author": "이주희 글·그림",
+      "authorConfirmed": true
+    },
+    {
+      "id": "bk-18",
+      "file": "covers/cover18.jpg",
+      "title": "단 하루! 시간을 배송하는 하늘 택배",
+      "author": "김경미 글, 김무연 그림",
+      "authorConfirmed": true
+    },
+    {
+      "id": "bk-19",
+      "file": "covers/cover19.jpg",
+      "title": "오싹오싹 친구들! 섬뜩한 코바늘",
+      "author": "애런 레이놀즈 글, 피터 브라운 그림",
+      "authorConfirmed": true
+    },
+    {
+      "id": "bk-20",
+      "file": "covers/cover20.jpg",
+      "title": "흔한 남매 23",
+      "author": "백난도 글, 유난희 그림 (원작 흔한남매)",
+      "authorConfirmed": true
+    },
+    {
+      "id": "bk-21",
+      "file": "covers/cover21.jpg",
+      "title": "에그박사 19",
+      "author": "박송이 글, 홍종현 그림 (원작 에그박사)",
+      "authorConfirmed": true
+    },
+    {
+      "id": "bk-22",
+      "file": "covers/cover22.jpg",
+      "title": "내 멋대로 친구 뽑기",
+      "author": "최은옥 글, 김무연 그림",
+      "authorConfirmed": true
+    }
   ],
   "diffsets": [
     {
@@ -32,9 +164,30 @@
       "modifiedFile": "covers/cover13_mod.jpg",
       "reviewed": true,
       "regions": [
-        { "id": "d13-headphone", "x": 0.17, "y": 0.235, "width": 0.25, "height": 0.125, "memo": "왼쪽 위 아이의 빨간 헤드폰이 파란색으로" },
-        { "id": "d13-bird", "x": 0.80, "y": 0.87, "width": 0.19, "height": 0.12, "memo": "오른쪽 아래 노란 새가 사라짐" },
-        { "id": "d13-notes", "x": 0.05, "y": 0.78, "width": 0.19, "height": 0.12, "memo": "왼쪽 아래 음표가 사라짐" }
+        {
+          "id": "d13-headphone",
+          "x": 0.17,
+          "y": 0.235,
+          "width": 0.25,
+          "height": 0.125,
+          "memo": "왼쪽 위 아이의 빨간 헤드폰이 파란색으로"
+        },
+        {
+          "id": "d13-bird",
+          "x": 0.8,
+          "y": 0.87,
+          "width": 0.19,
+          "height": 0.12,
+          "memo": "오른쪽 아래 노란 새가 사라짐"
+        },
+        {
+          "id": "d13-notes",
+          "x": 0.05,
+          "y": 0.78,
+          "width": 0.19,
+          "height": 0.12,
+          "memo": "왼쪽 아래 음표가 사라짐"
+        }
       ]
     },
     {
@@ -43,9 +196,30 @@
       "modifiedFile": "covers/cover03_mod.jpg",
       "reviewed": true,
       "regions": [
-        { "id": "d03-poster", "x": 0.63, "y": 0.24, "width": 0.22, "height": 0.16, "memo": "오른쪽 위 날아가는 전단지가 사라짐" },
-        { "id": "d03-paper", "x": 0.38, "y": 0.38, "width": 0.14, "height": 0.17, "memo": "가운데 흰 종이가 사라짐" },
-        { "id": "d03-body", "x": 0.46, "y": 0.69, "width": 0.46, "height": 0.27, "memo": "브로콜리 몸 색이 연두색에서 주황색으로" }
+        {
+          "id": "d03-poster",
+          "x": 0.63,
+          "y": 0.24,
+          "width": 0.22,
+          "height": 0.16,
+          "memo": "오른쪽 위 날아가는 전단지가 사라짐"
+        },
+        {
+          "id": "d03-paper",
+          "x": 0.38,
+          "y": 0.38,
+          "width": 0.14,
+          "height": 0.17,
+          "memo": "가운데 흰 종이가 사라짐"
+        },
+        {
+          "id": "d03-body",
+          "x": 0.46,
+          "y": 0.69,
+          "width": 0.46,
+          "height": 0.27,
+          "memo": "브로콜리 몸 색이 연두색에서 주황색으로"
+        }
       ]
     },
     {
@@ -54,21 +228,272 @@
       "modifiedFile": "covers/cover18_mod.jpg",
       "reviewed": true,
       "regions": [
-        { "id": "d18-clock", "x": 0.84, "y": 0.44, "width": 0.14, "height": 0.10, "memo": "오른쪽 시계가 초록색에서 파란색으로" },
-        { "id": "d18-hat", "x": 0.08, "y": 0.77, "width": 0.15, "height": 0.10, "memo": "고양이 모자가 분홍색에서 보라색으로" },
-        { "id": "d18-star", "x": 0.535, "y": 0.70, "width": 0.115, "height": 0.09, "memo": "아빠 상자의 별 스티커가 사라짐" }
+        {
+          "id": "d18-clock",
+          "x": 0.84,
+          "y": 0.44,
+          "width": 0.14,
+          "height": 0.1,
+          "memo": "오른쪽 시계가 초록색에서 파란색으로"
+        },
+        {
+          "id": "d18-hat",
+          "x": 0.08,
+          "y": 0.77,
+          "width": 0.15,
+          "height": 0.1,
+          "memo": "고양이 모자가 분홍색에서 보라색으로"
+        },
+        {
+          "id": "d18-star",
+          "x": 0.535,
+          "y": 0.7,
+          "width": 0.115,
+          "height": 0.09,
+          "memo": "아빠 상자의 별 스티커가 사라짐"
+        }
       ]
     }
   ],
   "config": {
     "mode": "real",
     "levels": {
-      "easy": { "puzzleBookIds": ["bk-14"], "differenceSetIds": ["diff-13"], "memoryRounds": [["bk-08", "bk-11", "bk-15", "bk-18"]] },
+      "easy": {
+        "puzzleBookIds": [
+          "bk-14"
+        ],
+        "differenceSetIds": [
+          "diff-13"
+        ],
+        "memoryRounds": [
+          [
+            "bk-08",
+            "bk-11",
+            "bk-15",
+            "bk-18"
+          ]
+        ],
+        "hiddenSetIds": [
+          "hid-18"
+        ]
+      },
       "hard": {
-        "puzzleBookIds": ["bk-12", "bk-16", "bk-02"],
-        "differenceSetIds": ["diff-13", "diff-03", "diff-18"],
-        "memoryRounds": [["bk-08", "bk-11", "bk-15", "bk-20", "bk-21", "bk-09"], ["bk-10", "bk-19", "bk-06", "bk-07", "bk-04", "bk-05"]]
+        "puzzleBookIds": [
+          "bk-12",
+          "bk-16",
+          "bk-02"
+        ],
+        "differenceSetIds": [
+          "diff-13",
+          "diff-03",
+          "diff-18"
+        ],
+        "memoryRounds": [
+          [
+            "bk-08",
+            "bk-11",
+            "bk-15",
+            "bk-20",
+            "bk-21",
+            "bk-09"
+          ],
+          [
+            "bk-10",
+            "bk-19",
+            "bk-06",
+            "bk-07",
+            "bk-04",
+            "bk-05"
+          ]
+        ],
+        "hiddenSetIds": [
+          "hid-18b",
+          "hid-13"
+        ]
       }
     }
-  }
+  },
+  "hiddensets": [
+    {
+      "id": "hid-18",
+      "bookId": "bk-18",
+      "reviewed": true,
+      "items": [
+        {
+          "id": "h18-clock",
+          "name": "시계",
+          "x": 0.84,
+          "y": 0.44,
+          "width": 0.14,
+          "height": 0.1
+        },
+        {
+          "id": "h18-star",
+          "name": "별 스티커",
+          "x": 0.535,
+          "y": 0.7,
+          "width": 0.115,
+          "height": 0.09
+        },
+        {
+          "id": "h18-hat",
+          "name": "분홍 모자",
+          "x": 0.08,
+          "y": 0.77,
+          "width": 0.15,
+          "height": 0.1
+        },
+        {
+          "id": "h18-dog",
+          "name": "강아지",
+          "x": 0.84,
+          "y": 0.82,
+          "width": 0.15,
+          "height": 0.14
+        },
+        {
+          "id": "h18-candy",
+          "name": "솜사탕",
+          "x": 0.895,
+          "y": 0.565,
+          "width": 0.105,
+          "height": 0.13
+        },
+        {
+          "id": "h18-wheel",
+          "name": "관람차",
+          "x": 0.8,
+          "y": 0.02,
+          "width": 0.19,
+          "height": 0.15
+        }
+      ]
+    },
+    {
+      "id": "hid-18b",
+      "bookId": "bk-18",
+      "reviewed": true,
+      "items": [
+        {
+          "id": "h18b-clock",
+          "name": "시계",
+          "x": 0.84,
+          "y": 0.44,
+          "width": 0.14,
+          "height": 0.1
+        },
+        {
+          "id": "h18b-star",
+          "name": "별 스티커",
+          "x": 0.535,
+          "y": 0.7,
+          "width": 0.115,
+          "height": 0.09
+        },
+        {
+          "id": "h18b-hat",
+          "name": "분홍 모자",
+          "x": 0.08,
+          "y": 0.77,
+          "width": 0.15,
+          "height": 0.1
+        },
+        {
+          "id": "h18b-dog",
+          "name": "강아지",
+          "x": 0.84,
+          "y": 0.82,
+          "width": 0.15,
+          "height": 0.14
+        },
+        {
+          "id": "h18b-candy",
+          "name": "솜사탕",
+          "x": 0.895,
+          "y": 0.565,
+          "width": 0.105,
+          "height": 0.13
+        },
+        {
+          "id": "h18b-wheel",
+          "name": "관람차",
+          "x": 0.8,
+          "y": 0.02,
+          "width": 0.19,
+          "height": 0.15
+        },
+        {
+          "id": "h18b-catballoon",
+          "name": "고양이 풍선",
+          "x": 0,
+          "y": 0.72,
+          "width": 0.12,
+          "height": 0.09
+        },
+        {
+          "id": "h18b-planet",
+          "name": "행성 스티커",
+          "x": 0.585,
+          "y": 0.715,
+          "width": 0.08,
+          "height": 0.065
+        }
+      ]
+    },
+    {
+      "id": "hid-13",
+      "bookId": "bk-13",
+      "reviewed": true,
+      "items": [
+        {
+          "id": "h13-headphone",
+          "name": "빨간 헤드폰",
+          "x": 0.17,
+          "y": 0.235,
+          "width": 0.25,
+          "height": 0.125
+        },
+        {
+          "id": "h13-redcap",
+          "name": "빨간 모자",
+          "x": 0.4,
+          "y": 0.22,
+          "width": 0.22,
+          "height": 0.12
+        },
+        {
+          "id": "h13-glasses",
+          "name": "빙글빙글 안경",
+          "x": 0.21,
+          "y": 0.51,
+          "width": 0.15,
+          "height": 0.09
+        },
+        {
+          "id": "h13-gamepad",
+          "name": "게임기",
+          "x": 0.24,
+          "y": 0.6,
+          "width": 0.11,
+          "height": 0.07
+        },
+        {
+          "id": "h13-notes",
+          "name": "음표",
+          "x": 0.05,
+          "y": 0.78,
+          "width": 0.19,
+          "height": 0.12
+        },
+        {
+          "id": "h13-bird",
+          "name": "노란 새",
+          "x": 0.8,
+          "y": 0.87,
+          "width": 0.19,
+          "height": 0.12
+        }
+      ]
+    }
+  ]
 }

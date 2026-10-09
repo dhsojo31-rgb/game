@@ -4,6 +4,7 @@ import { saveBlobAsset, get, put } from './db.js';
 
 export const DEMO_BOOK_IDS = ['demo-book-1', 'demo-book-2', 'demo-book-3', 'demo-book-4'];
 export const DEMO_DIFF_ID = 'demo-diff-1';
+export const DEMO_HIDDEN_ID = 'demo-hidden-1';
 
 const W = 600, H = 800;
 
@@ -88,7 +89,8 @@ function drawCover4(ctx) {
 export async function ensureDemoData() {
   const exists = await get('books', DEMO_BOOK_IDS[0]);
   const diff = await get('diffsets', DEMO_DIFF_ID);
-  if (exists && diff) return;
+  const hid = await get('hiddensets', DEMO_HIDDEN_ID);
+  if (exists && diff && hid) return;
 
   const drawers = [drawCover1, drawCover2, drawCover3, drawCover4];
   const books = [];
@@ -102,6 +104,14 @@ export async function ensureDemoData() {
   const mc = document.createElement('canvas'); mc.width = W; mc.height = H;
   drawCover1(mc.getContext('2d'), true);
   const modAsset = await saveBlobAsset(await canvasToBlob(mc), 'demo-asset-1-mod');
+  await put('hiddensets', {
+    id: DEMO_HIDDEN_ID, bookId: DEMO_BOOK_IDS[0], originalAssetId: 'demo-asset-1', isDemo: true, reviewed: true,
+    items: [
+      { id: 'h-sun', name: '해', x: 410 / W, y: 140 / H, width: 120 / W, height: 120 / H },
+      { id: 'h-door', name: '문', x: 260 / W, y: 495 / H, width: 80 / W, height: 130 / H },
+      { id: 'h-apple', name: '가운데 사과', x: 255 / W, y: 635 / H, width: 90 / W, height: 100 / H },
+    ],
+  });
   await put('diffsets', {
     id: DEMO_DIFF_ID, bookId: DEMO_BOOK_IDS[0], originalAssetId: 'demo-asset-1', modifiedAssetId: modAsset.id, isDemo: true, reviewed: true,
     regions: [

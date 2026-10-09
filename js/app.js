@@ -1,11 +1,12 @@
 // 책표지 탐정단 — 앱 본체: 상태, 화면 이동, 세션 초기화, 자료 로드
 import * as db from './db.js';
 import { setSoundEnabled, isSoundEnabled, sfx } from './sound.js';
-import { ensureDemoData, DEMO_BOOK_IDS, DEMO_DIFF_ID } from './demo.js';
+import { ensureDemoData, DEMO_BOOK_IDS, DEMO_DIFF_ID, DEMO_HIDDEN_ID } from './demo.js';
 import { validateConfig, validateLevel, ensureLevels, LEVEL_SPEC } from './validate.js';
 import { renderPuzzle } from './games/puzzle.js';
 import { renderDiff } from './games/diff.js';
 import { renderMemory } from './games/memory.js';
+import { renderHidden } from './games/hidden.js';
 import { renderStart, renderIntro, renderClue, renderEnding, renderBooks } from './story.js';
 import { renderAdmin } from './admin.js';
 
@@ -13,7 +14,7 @@ const app = document.getElementById('app');
 const modalRoot = document.getElementById('modal-root');
 
 const DEFAULT_CONFIG = { id: 'main', mode: 'demo', soundEnabled: false, bundleImported: false, levels: {} };
-const data = { books: [], diffsets: [], config: ensureLevels({ ...DEFAULT_CONFIG }), assets: new Map() };
+const data = { books: [], diffsets: [], hiddensets: [], config: ensureLevels({ ...DEFAULT_CONFIG }), assets: new Map() };
 
 // ---------- 세션 ----------
 let session = null;
@@ -22,7 +23,7 @@ function newSession() {
   seq += 1;
   session = {
     id: seq, timers: new Set(), screen: 'S00', level: 'easy', stage: 0, clues: [], completed: false, runtime: null,
-    rounds: { puzzle: 0, diff: 0, memory: 0 }, hints: { puzzle: 0, diff: 0, memory: 0 }, puzzle: null, diff: null, memory: null, ending: null,
+    rounds: { puzzle: 0, diff: 0, memory: 0, hidden: 0 }, hints: { puzzle: 0, diff: 0, memory: 0, hidden: 0 }, puzzle: null, diff: null, memory: null, hidden: null, ending: null,
   };
   return session;
 }
@@ -67,6 +68,7 @@ function confirmDialog(message, okLabel = '확인', cancelLabel = '취소') {
 async function loadData() {
   data.books = await db.getAll('books');
   data.diffsets = await db.getAll('diffsets');
+  data.hiddensets = await db.getAll('hiddensets');
   data.config = ensureLevels({ ...DEFAULT_CONFIG, ...((await db.get('config', 'main')) || {}) });
   const assets = await db.getAll('assets');
   data.assets = new Map(assets.map(a => [a.id, { width: a.width, height: a.height }]));
@@ -80,9 +82,16 @@ async function importBundle(draft) {
   const m = await res.json();
   const books = draft ? draft.books : data.books;
   const diffsets = draft ? draft.diffsets : data.diffsets;
+  const hiddensets = draft ? draft.hiddensets : data.hiddensets;
+  const bundleVersion = m.version || 1;
+  const storedVersion = data.config.bundleVersion || 1;
   let n = 0;
   for (const b of m.books) {
-    if (books.some(x => x.id === b.id)) continue;
+    const ex = books.find(x => x.id === b.id);
+    if (ex) {
+      if (!draft && storedVersion < bundleVersion && (ex.title !== b.title || ex.author !== b.author || !ex.authorConfirmed)) { ex.title = b.title; ex.author = b.author; ex.authorConfirmed = !!b.authorConfirmed; await db.put('books', ex); }
+      continue;
+    }
     const r = await fetch('assets/' + b.file, { cache: 'no-cache' });
     if (!r.ok) throw new Error(`${b.file} 을 열 수 없습니다.`);
     const asset = await db.saveBlobAsset(await r.blob(), 'bundle-' + b.id);
@@ -92,8 +101,6 @@ async function importBundle(draft) {
     if (!draft) await db.put('books', book);
     n += 1;
   }
-  const bundleVersion = m.version || 1;
-  const storedVersion = data.config.bundleVersion || 1;
   // 기본 제공 틀린그림(수정본·정답 영역)이 새 버전이면 자동 시작 시 갱신한다. 관리자의 '다시 불러오기'(draft)는 없는 것만 채운다.
   const refreshDiffs = !draft && storedVersion < bundleVersion;
   for (const d of m.diffsets || []) {
@@ -109,7 +116,23 @@ async function importBundle(draft) {
     if (idx >= 0) diffsets[idx] = ds; else diffsets.push(ds);
     if (!draft) await db.put('diffsets', ds);
   }
+  for (const h of m.hiddensets || []) {
+    const idx = hiddensets.findIndex(x => x.id === h.id);
+    if (idx >= 0 && !refreshDiffs) continue;
+    const book = books.find(b => b.id === h.bookId);
+    if (!book) continue;
+    const hs = { id: h.id, bookId: h.bookId, originalAssetId: book.originalAssetId, items: h.items.map(it => ({ id: it.id, name: it.name, x: it.x, y: it.y, width: it.width, height: it.height })), reviewed: !!h.reviewed, isDemo: false };
+    if (idx >= 0) hiddensets[idx] = hs; else hiddensets.push(hs);
+    if (!draft) await db.put('hiddensets', hs);
+  }
   if (!draft) {
+    // 기존 브라우저에 숨은그림 구성이 비어 있으면 기본 구성에서 채운다(교사가 고른 다른 구성은 유지)
+    if (storedVersion < bundleVersion && m.config && m.config.levels) {
+      for (const k of Object.keys(m.config.levels)) {
+        const lv = (data.config.levels || {})[k]; const src = m.config.levels[k];
+        if (lv && src && Array.isArray(src.hiddenSetIds) && (!Array.isArray(lv.hiddenSetIds) || lv.hiddenSetIds.every(v => !v))) lv.hiddenSetIds = src.hiddenSetIds.slice();
+      }
+    }
     const applyConfig = !data.config.bundleImported || storedVersion < 2; // 처음 가져올 때(또는 모드 구성이 없던 버전)만 기본 운영 구성을 적용
     data.config = ensureLevels({
       ...data.config,
@@ -121,10 +144,10 @@ async function importBundle(draft) {
   return n;
 }
 
-function currentErrors() { return validateConfig(data.config, data.books, data.diffsets, data.assets); }
+function currentErrors() { return validateConfig(data.config, data.books, data.diffsets, data.assets, data.hiddensets); }
 function levelErrors(level) {
   if (data.config.mode === 'demo') return level === 'easy' ? [] : ['연습 모드에서는 쉬운 모드만 할 수 있어요.'];
-  return validateLevel(level, data.config, data.books, data.diffsets, data.assets);
+  return validateLevel(level, data.config, data.books, data.diffsets, data.assets, data.hiddensets);
 }
 
 /** 세션 시작용 자료 묶음을 만들고 모든 이미지가 열리는지 확인한다. */
@@ -134,10 +157,10 @@ async function resolveRuntime(level) {
   const spec = LEVEL_SPEC[level];
   const bookById = id => data.books.find(b => b.id === id);
   const lv = isDemo
-    ? { puzzleBookIds: [DEMO_BOOK_IDS[0]], differenceSetIds: [DEMO_DIFF_ID], memoryRounds: [DEMO_BOOK_IDS.slice()] }
+    ? { puzzleBookIds: [DEMO_BOOK_IDS[0]], differenceSetIds: [DEMO_DIFF_ID], memoryRounds: [DEMO_BOOK_IDS.slice()], hiddenSetIds: [DEMO_HIDDEN_ID] }
     : cfg.levels[level];
   const url = async id => { const u = await db.getAssetURL(id); if (!u || !(await db.verifyImageURL(u))) throw new Error('이미지를 열 수 없습니다. 운영자에게 알려 주세요.'); return u; };
-  const rt = { level, isDemo, previewMs: spec.previewMs, hintsPerStage: spec.hintsPerStage, puzzles: [], diffs: [], memoryRounds: [], usedBooks: [] };
+  const rt = { level, isDemo, previewMs: spec.previewMs, hintsPerStage: spec.hintsPerStage, puzzles: [], diffs: [], memoryRounds: [], hidden: [], usedBooks: [] };
   const used = [];
   for (const id of lv.puzzleBookIds) {
     const b = bookById(id); if (!b) throw new Error('퍼즐 도서가 부족합니다.');
@@ -154,6 +177,12 @@ async function resolveRuntime(level) {
     for (const id of round) { const b = bookById(id); if (!b) throw new Error('메모리 도서가 부족합니다.'); books.push({ id: b.id, title: b.title, url: await url(b.originalAssetId) }); used.push(b); }
     rt.memoryRounds.push(books);
   }
+  for (const id of lv.hiddenSetIds || []) {
+    const h = data.hiddensets.find(x => x.id === id); if (!h) throw new Error('숨은그림 자료가 부족합니다.');
+    const b = bookById(h.bookId); if (!b) throw new Error('숨은그림 도서가 없습니다.');
+    const a = data.assets.get(b.originalAssetId);
+    rt.hidden.push({ set: h, book: b, url: await url(b.originalAssetId), width: a ? a.width : 3, height: a ? a.height : 4, items: h.items }); used.push(b);
+  }
   const seen = new Set();
   for (const b of used) {
     if (seen.has(b.id)) continue; seen.add(b.id);
@@ -163,12 +192,12 @@ async function resolveRuntime(level) {
 }
 
 // ---------- 화면 ----------
-const STEPS = [{ key: 'puzzle', ico: '🧩', name: '조각 작업대' }, { key: 'diff', ico: '🔍', name: '관찰 책상' }, { key: 'memory', ico: '📚', name: '기억 책장' }];
-const STAGE_OF = { S02: 0, S03: 1, S04: 1, S05: 2, S06: 2, S07: 3, S08: 3, S09: 3 };
+const STEPS = [{ key: 'puzzle', ico: '🧩', name: '조각 작업대' }, { key: 'diff', ico: '🔍', name: '관찰 책상' }, { key: 'memory', ico: '📚', name: '기억 책장' }, { key: 'hidden', ico: '🕵️', name: '숨은그림 찾기' }];
+const STAGE_OF = { S02: 0, S03: 1, S04: 1, S05: 2, S06: 2, S07: 3, S10: 3, S11: 4, S08: 4, S09: 4 };
 
 function roundTotal(kind) {
   const rt = session.runtime; if (!rt) return 1;
-  return kind === 'puzzle' ? rt.puzzles.length : kind === 'diff' ? rt.diffs.length : rt.memoryRounds.length;
+  return kind === 'puzzle' ? rt.puzzles.length : kind === 'diff' ? rt.diffs.length : kind === 'memory' ? rt.memoryRounds.length : rt.hidden.length;
 }
 function roundLabel(kind) {
   const total = roundTotal(kind);
@@ -198,7 +227,7 @@ function bindTopbar() {
   });
 }
 
-const GUARD = { S01: 0, S02: 0, S03: 1, S04: 1, S05: 2, S06: 2, S07: 3, S08: 3, S09: 3 };
+const GUARD = { S01: 0, S02: 0, S03: 1, S04: 1, S05: 2, S06: 2, S07: 3, S10: 3, S11: 4, S08: 4, S09: 4 };
 
 async function startLevel(level) {
   try { session.runtime = await resolveRuntime(level); session.level = level; resetHints(); go('S01'); }
@@ -208,7 +237,7 @@ async function startLevel(level) {
 async function go(screen) {
   if (GUARD[screen] !== undefined) {
     if (!session.runtime) { screen = 'S00'; }
-    else if (session.stage < GUARD[screen]) { screen = ['S00', 'S02', 'S04', 'S06'][session.stage] || 'S00'; }
+    else if (session.stage < GUARD[screen]) { screen = ['S00', 'S02', 'S04', 'S06', 'S10'][session.stage] || 'S00'; }
   }
   if (screen === 'S09' && !session.completed) screen = 'S08';
   session.screen = screen;
@@ -271,7 +300,12 @@ async function go(screen) {
     const books = rt.memoryRounds[session.rounds.memory];
     renderMemory(body, { session, later, sfx, books, previewMs: rt.previewMs, roundLabel: roundLabel('memory'), hints: hintApi('memory'), onComplete: () => roundDone('memory', 'S06', 3, 'box', 'S07') });
   }
-  else if (screen === 'S07') renderClue(body, { clueKey: 'box', clues: session.clues, onNext: () => go('S08') });
+  else if (screen === 'S07') renderClue(body, { clueKey: 'box', clues: session.clues, onNext: () => go('S10') });
+  else if (screen === 'S10') {
+    const h = rt.hidden[session.rounds.hidden];
+    renderHidden(body, { session, later, sfx, url: h.url, width: h.width, height: h.height, items: h.items, roundLabel: roundLabel('hidden'), hints: hintApi('hidden'), onComplete: () => roundDone('hidden', 'S10', 4, 'map', 'S11') });
+  }
+  else if (screen === 'S11') renderClue(body, { clueKey: 'map', clues: session.clues, onNext: () => go('S08') });
   else if (screen === 'S08') renderEnding(body, { session, later, sfx, onOpened: () => { session.completed = true; }, onBooks: () => go('S09') });
   else if (screen === 'S09') renderBooks(body, { books: rt.usedBooks, isDemo: rt.isDemo, showModal, onNextDetective: () => resetSession() });
   mountInspectBar();
@@ -289,20 +323,22 @@ function askInspectLevel() {
 // ---------- 교사용 점검 모드 ----------
 /** 난이도 규격에 따른 점검 지점 목록 */
 function inspectTargets(level, isDemo) {
-  const spec = isDemo ? { puzzles: 1, diffs: 1, memory: [1] } : LEVEL_SPEC[level];
+  const spec = isDemo ? { puzzles: 1, diffs: 1, memory: [1], hidden: 1 } : LEVEL_SPEC[level];
   const t = [{ id: 'S00', label: '시작 화면', screen: 'S00' }, { id: 'S01', label: '사건 소개', screen: 'S01' }];
   for (let i = 0; i < spec.puzzles; i++) t.push({ id: `S02-${i}`, label: `퍼즐 ${spec.puzzles > 1 ? i + 1 : ''}`.trim(), screen: 'S02', kind: 'puzzle', round: i });
   t.push({ id: 'S03', label: '첫 단서', screen: 'S03' });
   for (let i = 0; i < spec.diffs; i++) t.push({ id: `S04-${i}`, label: `틀린그림 ${spec.diffs > 1 ? i + 1 : ''}`.trim(), screen: 'S04', kind: 'diff', round: i });
   t.push({ id: 'S05', label: '두 번째 단서', screen: 'S05' });
   for (let i = 0; i < spec.memory.length; i++) t.push({ id: `S06-${i}`, label: `메모리 ${spec.memory.length > 1 ? i + 1 + '판' : ''}`.trim(), screen: 'S06', kind: 'memory', round: i });
-  t.push({ id: 'S07', label: '마지막 단서', screen: 'S07' });
+  t.push({ id: 'S07', label: '세 번째 단서', screen: 'S07' });
+  for (let i = 0; i < spec.hidden; i++) t.push({ id: `S10-${i}`, label: `숨은그림 ${spec.hidden > 1 ? i + 1 : ''}`.trim(), screen: 'S10', kind: 'hidden', round: i });
+  t.push({ id: 'S11', label: '마지막 단서', screen: 'S11' });
   t.push({ id: 'S08', label: '사건 해결', screen: 'S08' });
   t.push({ id: 'S09', label: '오늘 만난 책', screen: 'S09' });
   return t;
 }
-const STAGE_NEEDED = { S01: 0, S02: 0, S03: 1, S04: 1, S05: 2, S06: 2, S07: 3, S08: 3, S09: 3 };
-const CLUE_ORDER = ['blue', 'star', 'box'];
+const STAGE_NEEDED = { S01: 0, S02: 0, S03: 1, S04: 1, S05: 2, S06: 2, S07: 3, S10: 3, S11: 4, S08: 4, S09: 4 };
+const CLUE_ORDER = ['blue', 'star', 'box', 'map'];
 
 /** 점검 지점으로 바로 이동: 그 화면에 필요한 진행 상태를 만들어 준다. */
 async function jumpTo(target) {
@@ -314,11 +350,12 @@ async function jumpTo(target) {
   const stage = STAGE_NEEDED[target.screen];
   session.stage = stage;
   session.clues = CLUE_ORDER.slice(0, stage);
-  session.rounds = { puzzle: 0, diff: 0, memory: 0 };
+  session.rounds = { puzzle: 0, diff: 0, memory: 0, hidden: 0 };
   if (target.kind) session.rounds[target.kind] = target.round;
   if (target.kind === 'diff') session.rounds.puzzle = session.runtime.puzzles.length - 1;
   if (target.kind === 'memory') { session.rounds.puzzle = session.runtime.puzzles.length - 1; session.rounds.diff = session.runtime.diffs.length - 1; }
-  session.puzzle = null; session.diff = null; session.memory = null; session.ending = null;
+  if (target.kind === 'hidden') { session.rounds.puzzle = session.runtime.puzzles.length - 1; session.rounds.diff = session.runtime.diffs.length - 1; session.rounds.memory = session.runtime.memoryRounds.length - 1; }
+  session.puzzle = null; session.diff = null; session.memory = null; session.hidden = null; session.ending = null;
   resetHints();
   session.completed = target.screen === 'S09';
   for (const t of session.timers) clearTimeout(t); session.timers.clear();
@@ -342,7 +379,7 @@ function endInspect(toAdmin) {
 
 function currentTargetIndex(targets) {
   const s = session.screen;
-  const kind = { S02: 'puzzle', S04: 'diff', S06: 'memory' }[s];
+  const kind = { S02: 'puzzle', S04: 'diff', S06: 'memory', S10: 'hidden' }[s];
   return targets.findIndex(t => t.screen === s && (!kind || t.round === session.rounds[kind]));
 }
 
@@ -356,7 +393,9 @@ function skipCurrent() {
   else if (s === 'S04') roundDone('diff', 'S04', 2, 'star', 'S05');
   else if (s === 'S05') go('S06');
   else if (s === 'S06') roundDone('memory', 'S06', 3, 'box', 'S07');
-  else if (s === 'S07') go('S08');
+  else if (s === 'S07') go('S10');
+  else if (s === 'S10') roundDone('hidden', 'S10', 4, 'map', 'S11');
+  else if (s === 'S11') go('S08');
   else if (s === 'S08') { session.completed = true; go('S09'); }
 }
 
@@ -434,7 +473,7 @@ function roundDone(kind, screen, stageNo, clue, next) {
   if (r + 1 < total) {
     session.rounds[kind] = r + 1;
     session[kind] = null; // 다음 판은 새 상태로
-    const names = { puzzle: '표지', diff: '표지', memory: '판' };
+    const names = { puzzle: '표지', diff: '표지', memory: '판', hidden: '표지' };
     showModal(`<p style="font-size:26px;font-weight:700;color:var(--blue-dark);margin:0 0 6px">${r + 1}/${total} 완료!</p>
       <p style="font-size:20px">다음 ${names[kind]}도 살펴볼까?</p>
       <div class="btn-row"><button class="btn primary" id="btn-round-next">다음 ${names[kind]} ▶</button></div>`, { dismissible: false });
@@ -447,7 +486,7 @@ function roundDone(kind, screen, stageNo, clue, next) {
 /** 단계별 도와줘 횟수: 쉬운 모드 2번, 어려운 모드 3번 (단계 안의 모든 판을 합쳐 셈) */
 function resetHints() {
   const n = session.runtime ? session.runtime.hintsPerStage : 0;
-  session.hints = { puzzle: n, diff: n, memory: n };
+  session.hints = { puzzle: n, diff: n, memory: n, hidden: n };
 }
 function hintApi(kind) {
   return {

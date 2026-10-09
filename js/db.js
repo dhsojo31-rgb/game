@@ -1,7 +1,7 @@
 // IndexedDB 저장소: 이미지(Blob)·도서·틀린그림 세트·운영 설정을 기기에 지속 저장한다.
 const DB_NAME = 'bookcover-detective';
-const DB_VER = 1;
-const STORES = ['assets', 'books', 'diffsets', 'config'];
+const DB_VER = 2;
+const STORES = ['assets', 'books', 'diffsets', 'hiddensets', 'config'];
 
 let dbPromise = null;
 
@@ -113,10 +113,11 @@ export function verifyImageURL(url) {
 }
 
 /** 아무 도서·틀린그림에서도 참조하지 않는 자산 삭제 */
-export async function cleanupOrphanAssets(books, diffsets) {
+export async function cleanupOrphanAssets(books, diffsets, hiddensets = []) {
   const used = new Set();
   for (const b of books) used.add(b.originalAssetId);
   for (const d of diffsets) { used.add(d.originalAssetId); used.add(d.modifiedAssetId); }
+  for (const h of hiddensets) used.add(h.originalAssetId);
   const all = await getAll('assets');
   for (const a of all) if (!used.has(a.id)) { forgetAssetURL(a.id); await del('assets', a.id); }
 }
