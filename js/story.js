@@ -74,13 +74,13 @@ export function notebookHTML(clues) {
 export function renderClue(root, ctx) {
   const c = CLUES[ctx.clueKey];
   root.innerHTML = `
-    <section class="screen center">
+    <section class="screen center clue-screen">
       <h2 style="color:var(--brown);margin:0">${ctx.clueKey === 'box' ? '마지막 단서' : ctx.clueKey === 'star' ? '두 번째 단서' : '첫 단서'}</h2>
       <div class="clue-big">${clueSVG(ctx.clueKey)}</div>
       <p class="sub" style="font-weight:700">${c.item}을(를) 찾았어요!</p>
       <div class="moa-say">${moaSVG()}<div class="bubble">${c.line}</div></div>
       ${notebookHTML(ctx.clues)}
-      <div class="btn-row"><button class="btn primary" id="btn-next">${ctx.clueKey === 'box' ? '열쇠 찾으러 가기' : '다음 단서 찾기'}</button></div>
+      <div class="btn-row sticky-next"><button class="btn primary" id="btn-next">${ctx.clueKey === 'box' ? '열쇠 찾으러 가기' : '다음 단서 찾기'}</button></div>
     </section>`;
   root.querySelector('#btn-next').addEventListener('click', ctx.onNext);
 }
@@ -106,7 +106,7 @@ export function renderEnding(root, ctx) {
       ${badgeSVG()}
       <p style="font-size:24px;font-weight:700;color:var(--blue-dark);margin:8px 0">사건 해결! 책표지 탐정단, 고마워!</p>
       <p class="sub" style="font-weight:700">자세히 보고, 비교하고, 기억해서 열쇠를 찾았어!</p>
-      <div class="btn-row"><button class="btn primary" id="btn-books">오늘 만난 책</button></div>`;
+      <div class="btn-row sticky-next"><button class="btn primary" id="btn-books">오늘 만난 책</button></div>`;
     cel.querySelector('#btn-books').addEventListener('click', ctx.onBooks);
     if (!instant) cel.scrollIntoView({ behavior: 'smooth', block: 'end' });
   }
@@ -138,7 +138,7 @@ export function renderBooks(root, ctx) {
         ${books.map(b => `<button class="book-tile" data-id="${b.id}" aria-label="${b.title} 크게 보기"><div class="cover"><img src="${b.url}" alt="${b.title}"></div><div class="t">${b.title}</div></button>`).join('')}
       </div>
       <p class="sub" style="margin-top:14px">표지를 누르면 크게 볼 수 있어요.</p>
-      <div class="btn-row"><button class="btn primary" id="btn-next" style="font-size:26px">처음 화면으로</button></div>
+      <div class="btn-row sticky-next"><button class="btn primary" id="btn-next" style="font-size:26px">처음 화면으로</button></div>
     </section>`;
   root.querySelectorAll('.book-tile').forEach(el => el.addEventListener('click', () => {
     const b = books.find(x => x.id === el.dataset.id);

@@ -234,6 +234,10 @@ img { -webkit-user-drag: none; user-select: none; }
 .notebook .slotc.got { border-style: solid; border-color: var(--green); color: var(--ink); }
 .notebook .slotc svg { width: 80px; height: 80px; }
 
+/* 다음 버튼을 화면 아래에 항상 보이게 (내용이 길어 스크롤되는 화면) */
+.sticky-next { position: sticky; bottom: 10px; z-index: 5; }
+.sticky-next .btn { box-shadow: 0 0 0 6px rgba(255,248,231,.9), var(--shadow); }
+
 /* ---------- 결말 ---------- */
 .ending-scene { width: min(92vw, 640px); }
 .ending-scene svg { width: 100%; height: auto; }
