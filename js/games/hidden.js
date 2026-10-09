@@ -25,7 +25,7 @@ export function renderHidden(root, ctx) {
       <span class="hid-list-title">찾을 물건</span>
       ${items.map(it => `<div class="hid-item ${st.found.includes(it.id) ? 'found' : ''}" data-item="${it.id}">${thumbHTML(it)}<span class="hid-name">${nameOf(it)}</span><span class="hid-check" aria-hidden="true">✔</span></div>`).join('')}
     </div>
-    <div class="hid-wrap" id="hid-wrap"><img src="${ctx.url}" alt="숨은 그림이 있는 책 표지" draggable="false"><div class="hid-objs" aria-hidden="true">${items.filter(it => it.kind).map(it => `<div class="hid-obj" data-obj="${it.id}" style="left:${it.x * 100}%;top:${it.y * 100}%;width:${it.width * 100}%;height:${it.height * 100}%;transform:rotate(${it.rot || 0}deg)">${objectSVG(it.kind)}</div>`).join('')}</div><div class="marks"></div></div></div>
+    <div class="hid-wrap" id="hid-wrap" style="--r:${imgRatio}"><img src="${ctx.url}" alt="숨은 그림이 있는 책 표지" draggable="false"><div class="hid-objs" aria-hidden="true">${items.filter(it => it.kind).map(it => `<div class="hid-obj" data-obj="${it.id}" style="left:${it.x * 100}%;top:${it.y * 100}%;width:${it.width * 100}%;height:${it.height * 100}%;transform:rotate(${it.rot || 0}deg)">${objectSVG(it.kind)}</div>`).join('')}</div><div class="marks"></div></div></div>
     <div class="help-area">
       <span class="progress" id="hid-progress">찾은 물건 ${st.found.length}/${items.length}</span>
       <button class="btn small ghost" id="hid-hint">${ctx.hints.label()}</button>

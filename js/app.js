@@ -134,7 +134,8 @@ async function importBundle(draft) {
         const lv = (data.config.levels || {})[k]; const src = m.config.levels[k];
         if (!lv || !src || !Array.isArray(src.hiddenSetIds)) continue;
         const cur = Array.isArray(lv.hiddenSetIds) ? lv.hiddenSetIds : [];
-        if (cur.every(v => !v || !hiddensets.some(h => h.id === v))) lv.hiddenSetIds = src.hiddenSetIds.slice();
+        // 비어 있거나 기본 제공 세트(hid-*)만 가리키면(교사가 직접 만든 세트가 아니면) 새 기본값으로 바꾼다
+        if (cur.every(v => !v || /^hid-/.test(v))) lv.hiddenSetIds = src.hiddenSetIds.slice();
       }
     }
     const applyConfig = !data.config.bundleImported || storedVersion < 2; // 처음 가져올 때(또는 모드 구성이 없던 버전)만 기본 운영 구성을 적용
