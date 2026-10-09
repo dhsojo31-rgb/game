@@ -2,7 +2,7 @@
 <html lang="ko">
 <head>
 <meta charset="UTF-8">
-<title>책표지 탐정단 메모리 카드 인쇄용 (6×9cm, 44장)</title>
+<title>책표지 탐정단 메모리 카드 인쇄용 (6×9cm, 44장, 양면)</title>
 <style>
   @page { size: A4 portrait; margin: 0; }
   * { box-sizing: border-box; }
@@ -40,7 +40,7 @@
 <body>
 <div class="note">
   <h1>책표지 탐정단 · 메모리 카드 인쇄용 (카드 6×9cm, 표지 22종 × 2장 = 44장)</h1>
-  <div><b>인쇄 방법</b> ① 인쇄 창에서 용지 A4, 여백 "없음", 배율 100%, "배경 그래픽" 켜기 ② 1~5쪽 = 앞면(44장 + 빈칸 1), 6~10쪽 = 뒷면(공통 디자인) ③ 양면 인쇄(긴 쪽 뒤집기)를 쓰거나, 앞면 1~5쪽을 먼저 뽑은 뒤 그 종이 뒷면에 6~10쪽을 인쇄하세요 ④ 점선을 따라 오립니다. 두꺼운 종이(180g 이상)나 코팅을 권합니다.</div>
+  <div><b>인쇄 방법</b> ① 인쇄 창에서 용지 A4, 여백 "없음", 배율 100%, "배경 그래픽" 켜기, <b>양면 인쇄(긴 쪽 뒤집기)</b> 선택 ② 홀수 쪽(1·3·5·7·9)은 앞면 44장, 짝수 쪽(2·4·6·8·10)은 그 바로 앞 쪽의 뒷면(공통 디자인)이라 양면으로 뽑으면 앞뒤가 맞습니다 ③ 단면 프린터면 홀수 쪽만 먼저 뽑고, 종이를 뒤집어 넣은 뒤 짝수 쪽만 인쇄하세요 ④ 점선을 따라 오립니다. 두꺼운 종이(180g 이상)나 코팅을 권합니다.</div>
   <div style="margin-top:6px"><b>놀이 방법</b> 카드를 뒤집어 섞어 놓고 두 장씩 뒤집어 같은 표지를 찾습니다. 짝을 맞추면 가져가고, 다르면 다시 뒤집습니다. 처음에는 4~6종(8~12장)만 골라 쓰면 저학년도 쉽게 할 수 있어요.</div>
   <div style="margin-top:6px; color:#8a7a68">이 안내문은 인쇄되지 않습니다. 인쇄: Ctrl+P</div>
 </div>
@@ -58,19 +58,18 @@
   const pagesEl = document.getElementById('pages');
   const marks = `<span class="mark" style="left:8mm;top:6.5mm"></span><span class="mark" style="right:8mm;top:6.5mm"></span><span class="mark" style="left:8mm;bottom:6.5mm"></span><span class="mark" style="right:8mm;bottom:6.5mm"></span>`;
   const totalPages = Math.ceil(ordered.length / per);
+  const backSVG = `<svg viewBox="0 0 120 160" aria-hidden="true"><path d="M20 6h80v148l-40-28-40 28z" fill="#f6c543" stroke="#6b4423" stroke-width="5" stroke-linejoin="round"/><path d="M30 16h60v110l-30-21-30 21z" fill="#fff3c4"/><circle cx="45" cy="58" r="6" fill="#3b2a1a"/><circle cx="75" cy="58" r="6" fill="#3b2a1a"/><circle cx="47" cy="56" r="2" fill="#fff"/><circle cx="77" cy="56" r="2" fill="#fff"/><path d="M44 80q16 14 32 0" fill="none" stroke="#3b2a1a" stroke-width="4" stroke-linecap="round"/><circle cx="36" cy="74" r="5" fill="#f4a0a0" opacity=".8"/><circle cx="84" cy="74" r="5" fill="#f4a0a0" opacity=".8"/><circle cx="60" cy="112" r="10" fill="none" stroke="#2f6fde" stroke-width="4"/><path d="M67 119l10 10" stroke="#2f6fde" stroke-width="5" stroke-linecap="round"/></svg>`;
+  // 양면 인쇄용: 앞면 1쪽 → 뒷면 1쪽 → 앞면 2쪽 → 뒷면 2쪽 … (홀수 쪽 앞면, 짝수 쪽 뒷면)
   for (let p = 0; p < totalPages; p++) {
     const slice = ordered.slice(p * per, p * per + per);
     const cells = [];
     for (let i = 0; i < per; i++) {
-      const b = slice[i];
-      cells.push(b ? `<div class="card"><div class="img"><img src="../assets/${b.file}" alt="${b.title}"></div><div class="title">${b.title}</div></div>` : `<div class="card blank"></div>`);
+      const bk = slice[i];
+      cells.push(bk ? `<div class="card"><div class="img"><img src="../assets/${bk.file}" alt="${bk.title}"></div><div class="title">${bk.title}</div></div>` : `<div class="card blank"></div>`);
     }
-    pagesEl.insertAdjacentHTML('beforeend', `<section class="page">${marks}<div class="grid">${cells.join('')}</div><div class="page-no">앞면 ${p + 1} / ${totalPages}</div></section>`);
-  }
-  const backSVG = `<svg viewBox="0 0 120 160" aria-hidden="true"><path d="M20 6h80v148l-40-28-40 28z" fill="#f6c543" stroke="#6b4423" stroke-width="5" stroke-linejoin="round"/><path d="M30 16h60v110l-30-21-30 21z" fill="#fff3c4"/><circle cx="45" cy="58" r="6" fill="#3b2a1a"/><circle cx="75" cy="58" r="6" fill="#3b2a1a"/><circle cx="47" cy="56" r="2" fill="#fff"/><circle cx="77" cy="56" r="2" fill="#fff"/><path d="M44 80q16 14 32 0" fill="none" stroke="#3b2a1a" stroke-width="4" stroke-linecap="round"/><circle cx="36" cy="74" r="5" fill="#f4a0a0" opacity=".8"/><circle cx="84" cy="74" r="5" fill="#f4a0a0" opacity=".8"/><circle cx="60" cy="112" r="10" fill="none" stroke="#2f6fde" stroke-width="4"/><path d="M67 119l10 10" stroke="#2f6fde" stroke-width="5" stroke-linecap="round"/></svg>`;
-  for (let p = 0; p < totalPages; p++) {
-    const cells = Array.from({ length: per }, () => `<div class="card back"><div class="inner">${backSVG}<div class="t1">책표지 탐정단</div><div class="t2">메모리 게임</div></div></div>`);
-    pagesEl.insertAdjacentHTML('beforeend', `<section class="page back-page">${marks}<div class="grid">${cells.join('')}</div><div class="page-no">뒷면 ${p + 1} / ${totalPages} (앞면 ${p + 1}쪽의 뒷면)</div></section>`);
+    pagesEl.insertAdjacentHTML('beforeend', `<section class="page">${marks}<div class="grid">${cells.join('')}</div><div class="page-no">${2 * p + 1}쪽 · 앞면 ${p + 1} / ${totalPages}</div></section>`);
+    const backs = Array.from({ length: per }, () => `<div class="card back"><div class="inner">${backSVG}<div class="t1">책표지 탐정단</div><div class="t2">메모리 게임</div></div></div>`);
+    pagesEl.insertAdjacentHTML('beforeend', `<section class="page back-page">${marks}<div class="grid">${backs.join('')}</div><div class="page-no">${2 * p + 2}쪽 · 뒷면 ${p + 1} / ${totalPages} (${2 * p + 1}쪽의 뒷면)</div></section>`);
   }
   await Promise.all([...document.images].map(img => img.complete ? null : new Promise(r => { img.onload = img.onerror = r; })));
   document.body.dataset.ready = '1';
