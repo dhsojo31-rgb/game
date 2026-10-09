@@ -22,14 +22,14 @@ export function renderMemory(root, ctx) {
 
   root.innerHTML = `
     <p class="guide"><span class="gt">같은 책 표지를 <em>찾아요!</em>${ctx.roundLabel ? ` <span class="round-label">${ctx.roundLabel}</span>` : ''}</span><span class="gs" id="mm-sub">카드 두 장을 눌러 같은 표지를 찾아요.</span></p>
-    <div class="memory-grid" id="mgrid" style="--cols:${cols}">
+    <div class="memory-wrap"><div class="pv-count" id="mm-count" aria-live="assertive" hidden></div><div class="memory-grid" id="mgrid" style="--cols:${cols}">
       ${st.cards.map((c, i) => `<button class="mcard" data-i="${i}" aria-label="카드 ${i + 1}">
         <span class="done-mark">✔</span>
         <div class="inner">
           <div class="face back" aria-hidden="true">📘</div>
           <div class="face front"><img src="${c.url}" alt="${c.title}" draggable="false"></div>
         </div></button>`).join('')}
-    </div>
+    </div></div>
     <div class="help-area">
       <span class="progress" id="mm-progress">찾은 짝 ${st.found}/${total}</span>
       <button class="btn small ghost" id="mm-hint">${ctx.hints.label()}</button>
@@ -54,15 +54,28 @@ export function renderMemory(root, ctx) {
     });
     hintBtn.disabled = st.previewing || st.hinting || st.lock || st.done || ctx.hints.left() <= 0;
     hintBtn.textContent = ctx.hints.label();
-    subEl.innerHTML = st.previewing ? '<span class="pv-badge">미리보기</span> 먼저 표지를 살펴봐요.' : '카드 두 장을 눌러 같은 표지를 찾아요.';
+    subEl.innerHTML = st.previewing ? `<span class="pv-badge">미리보기</span> 먼저 표지를 살펴봐요. <b class="pv-sec">${st.countdown ?? ''}</b>` : '카드 두 장을 눌러 같은 표지를 찾아요.';
     progress.textContent = `찾은 짝 ${st.found}/${total}`;
   }
 
   // 최초 미리보기: 전체 앞면 3초
+  const countEl = root.querySelector('#mm-count');
+  function showCount(n) {
+    st.countdown = n;
+    countEl.hidden = false; countEl.textContent = String(n);
+    countEl.classList.remove('tick'); void countEl.offsetWidth; countEl.classList.add('tick');
+    sync();
+  }
   if (!st.started) {
     st.started = true; st.previewing = true;
     say('카드를 잘 기억해요!');
-    later(() => { st.previewing = false; say('이제 같은 표지 두 장을 찾아요.'); sync(); }, previewMs);
+    // 3 → 2 → 1 초를 센 뒤 카드를 뒤집는다 (미리보기 시간만큼)
+    const secs = Math.max(1, Math.round(previewMs / 1000));
+    showCount(secs);
+    for (let k = 1; k < secs; k++) later(() => showCount(secs - k), k * 1000);
+    later(() => { st.previewing = false; st.countdown = null; countEl.hidden = true; say('이제 같은 표지 두 장을 찾아요.'); sync(); }, previewMs);
+  } else if (st.previewing && st.countdown) {
+    showCount(st.countdown);
   }
   sync();
 

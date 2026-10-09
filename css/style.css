@@ -194,6 +194,18 @@ img { -webkit-user-drag: none; user-select: none; }
 @media (max-width: 760px) { .diff-wrap img { max-width: 90vw; max-height: 40vh; } }
 
 /* ---------- 메모리 ---------- */
+.memory-wrap { position: relative; display: inline-block; }
+.pv-count {
+  position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); z-index: 3; pointer-events: none;
+  width: 150px; height: 150px; border-radius: 50%; background: rgba(255,255,255,.92); border: 6px solid var(--blue);
+  color: var(--blue-dark); font-size: 96px; font-weight: 900; line-height: 138px; text-align: center;
+  box-shadow: 0 8px 20px rgba(70,40,10,.3);
+}
+.pv-count.tick { animation: countpop .5s ease-out; }
+.pv-count[hidden] { display: none; }
+.pv-sec { color: var(--blue-dark); font-size: 22px; margin-left: 4px; }
+@keyframes countpop { from { transform: translate(-50%, -50%) scale(1.5); opacity: .4; } to { transform: translate(-50%, -50%) scale(1); opacity: 1; } }
+@media (max-width: 700px) { .pv-count { width: 100px; height: 100px; font-size: 64px; line-height: 90px; border-width: 5px; } }
 .memory-grid {
   --cols: 4; display: grid; grid-template-columns: repeat(var(--cols), 1fr); gap: 14px; overflow: hidden;
   width: min(88vw, calc(var(--cols) * 190px), calc((100vh - 300px) * var(--cols) * 0.375)); min-width: min(88vw, 420px);
