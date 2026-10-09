@@ -42,9 +42,15 @@ export function renderHidden(root, ctx) {
   syncHint();
 
   function itemAt(rx, ry) {
-    const pad = 0.015;
-    // 아직 못 찾은 물건을 우선 판정 (겹치는 경우 대비)
-    const hit = items.filter(it => rx >= it.x - pad && rx <= it.x + it.width + pad && ry >= it.y - pad && ry <= it.y + it.height + pad);
+    // 손가락으로 누르기 쉽게: 물건 상자를 중심으로 최소 폭 10%·높이 8%까지 넓혀 판정 (작은 물건일수록 여유가 커짐)
+    const inside = it => {
+      const w = Math.max(it.width + 0.03, 0.10), hh = Math.max(it.height + 0.03, 0.08);
+      const cx = it.x + it.width / 2, cy = it.y + it.height / 2;
+      return rx >= cx - w / 2 && rx <= cx + w / 2 && ry >= cy - hh / 2 && ry <= cy + hh / 2;
+    };
+    // 아직 못 찾은 물건 중 가장 가까운 것을 우선 판정 (겹치는 경우 대비)
+    const dist = it => Math.hypot(rx - (it.x + it.width / 2), ry - (it.y + it.height / 2));
+    const hit = items.filter(inside).sort((a, b) => dist(a) - dist(b));
     return hit.find(it => !st.found.includes(it.id)) || hit[0] || null;
   }
   function drawMark(it, cls = '') {
