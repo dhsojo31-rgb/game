@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<title>책표지 탐정단 메모리 카드 인쇄용 (6×9cm, 44장)</title>
+<style>
+  @page { size: A4 portrait; margin: 0; }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; background: #fff; font-family: "Malgun Gothic", "맑은 고딕", "Apple SD Gothic Neo", sans-serif; color: #3b2a1a; }
+  .note { padding: 16px 20px; background: #fff8e7; border-bottom: 2px solid #d9c7a8; font-size: 15px; line-height: 1.5; }
+  .note h1 { margin: 0 0 6px; font-size: 20px; }
+  .note b { color: #1f4fa8; }
+  @media print { .note { display: none; } }
+
+  .page { width: 210mm; height: 297mm; position: relative; page-break-after: always; break-after: page; padding: 9.5mm 11mm; margin: 0 auto; background: #fff; }
+  .page:last-child { page-break-after: auto; break-after: auto; }
+  .grid { display: grid; grid-template-columns: repeat(3, 60mm); grid-template-rows: repeat(3, 90mm); gap: 4mm; }
+  .card { width: 60mm; height: 90mm; border: 0.3mm dashed #9a8b74; border-radius: 3mm; overflow: hidden; position: relative; background: #fff; }
+  .card .img { position: absolute; left: 3mm; top: 3mm; width: 54mm; height: 72mm; display: flex; align-items: center; justify-content: center; }
+  .card .img img { max-width: 100%; max-height: 100%; object-fit: contain; }
+  .card .title { position: absolute; left: 3mm; right: 3mm; bottom: 3mm; height: 11mm; display: flex; align-items: center; justify-content: center; text-align: center; font-size: 9.5pt; font-weight: 700; line-height: 1.2; color: #3b2a1a; background: #fff3c4; border-radius: 2mm; padding: 0 2mm; overflow: hidden; }
+  .card.blank { border-color: transparent; }
+  /* 재단 보조선(페이지 가장자리 십자) */
+  .mark { position: absolute; width: 6mm; height: 6mm; pointer-events: none; }
+  .mark::before, .mark::after { content: ""; position: absolute; background: #999; }
+  .mark::before { left: 0; top: 3mm; width: 6mm; height: 0.2mm; }
+  .mark::after { left: 3mm; top: 0; width: 0.2mm; height: 6mm; }
+  .page-no { position: absolute; bottom: 3mm; left: 0; right: 0; text-align: center; font-size: 8pt; color: #999; }
+
+  /* 뒷면 */
+  .back { background: #2f6fde; border: 0.3mm dashed #ffffff; color: #fff; }
+  .back .inner { position: absolute; inset: 3mm; border: 0.6mm solid #fff; border-radius: 2.5mm; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2mm;
+    background: repeating-linear-gradient(45deg, rgba(255,255,255,.13) 0 4mm, transparent 4mm 8mm); -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  .back svg { width: 26mm; height: 34mm; }
+  .back .t1 { font-size: 14pt; font-weight: 900; letter-spacing: 1px; text-shadow: 0 0.5mm 0 rgba(0,0,0,.25); }
+  .back .t2 { font-size: 9pt; font-weight: 700; opacity: .9; }
+  .back-page { background: #fff; }
+</style>
+</head>
+<body>
+<div class="note">
+  <h1>책표지 탐정단 · 메모리 카드 인쇄용 (카드 6×9cm, 표지 22종 × 2장 = 44장)</h1>
+  <div><b>인쇄 방법</b> ① 인쇄 창에서 용지 A4, 여백 "없음", 배율 100%, "배경 그래픽" 켜기 ② 1~5쪽 = 앞면(44장 + 빈칸 1), 6~10쪽 = 뒷면(공통 디자인) ③ 양면 인쇄(긴 쪽 뒤집기)를 쓰거나, 앞면 1~5쪽을 먼저 뽑은 뒤 그 종이 뒷면에 6~10쪽을 인쇄하세요 ④ 점선을 따라 오립니다. 두꺼운 종이(180g 이상)나 코팅을 권합니다.</div>
+  <div style="margin-top:6px"><b>놀이 방법</b> 카드를 뒤집어 섞어 놓고 두 장씩 뒤집어 같은 표지를 찾습니다. 짝을 맞추면 가져가고, 다르면 다시 뒤집습니다. 처음에는 4~6종(8~12장)만 골라 쓰면 저학년도 쉽게 할 수 있어요.</div>
+  <div style="margin-top:6px; color:#8a7a68">이 안내문은 인쇄되지 않습니다. 인쇄: Ctrl+P</div>
+</div>
+<div id="pages"></div>
+<script>
+(async () => {
+  const res = await fetch('../assets/manifest.json', { cache: 'no-cache' });
+  const m = await res.json();
+  const books = m.books;
+  const cards = [];
+  books.forEach(b => { cards.push(b); cards.push(b); });
+  // 같은 표지 두 장이 한 쪽에 몰리지 않게: 첫 묶음 22장, 둘째 묶음 22장 순서
+  const ordered = [...books, ...books];
+  const per = 9;
+  const pagesEl = document.getElementById('pages');
+  const marks = `<span class="mark" style="left:8mm;top:6.5mm"></span><span class="mark" style="right:8mm;top:6.5mm"></span><span class="mark" style="left:8mm;bottom:6.5mm"></span><span class="mark" style="right:8mm;bottom:6.5mm"></span>`;
+  const totalPages = Math.ceil(ordered.length / per);
+  for (let p = 0; p < totalPages; p++) {
+    const slice = ordered.slice(p * per, p * per + per);
+    const cells = [];
+    for (let i = 0; i < per; i++) {
+      const b = slice[i];
+      cells.push(b ? `<div class="card"><div class="img"><img src="../assets/${b.file}" alt="${b.title}"></div><div class="title">${b.title}</div></div>` : `<div class="card blank"></div>`);
+    }
+    pagesEl.insertAdjacentHTML('beforeend', `<section class="page">${marks}<div class="grid">${cells.join('')}</div><div class="page-no">앞면 ${p + 1} / ${totalPages}</div></section>`);
+  }
+  const backSVG = `<svg viewBox="0 0 120 160" aria-hidden="true"><path d="M20 6h80v148l-40-28-40 28z" fill="#f6c543" stroke="#6b4423" stroke-width="5" stroke-linejoin="round"/><path d="M30 16h60v110l-30-21-30 21z" fill="#fff3c4"/><circle cx="45" cy="58" r="6" fill="#3b2a1a"/><circle cx="75" cy="58" r="6" fill="#3b2a1a"/><circle cx="47" cy="56" r="2" fill="#fff"/><circle cx="77" cy="56" r="2" fill="#fff"/><path d="M44 80q16 14 32 0" fill="none" stroke="#3b2a1a" stroke-width="4" stroke-linecap="round"/><circle cx="36" cy="74" r="5" fill="#f4a0a0" opacity=".8"/><circle cx="84" cy="74" r="5" fill="#f4a0a0" opacity=".8"/><circle cx="60" cy="112" r="10" fill="none" stroke="#2f6fde" stroke-width="4"/><path d="M67 119l10 10" stroke="#2f6fde" stroke-width="5" stroke-linecap="round"/></svg>`;
+  for (let p = 0; p < totalPages; p++) {
+    const cells = Array.from({ length: per }, () => `<div class="card back"><div class="inner">${backSVG}<div class="t1">책표지 탐정단</div><div class="t2">메모리 게임</div></div></div>`);
+    pagesEl.insertAdjacentHTML('beforeend', `<section class="page back-page">${marks}<div class="grid">${cells.join('')}</div><div class="page-no">뒷면 ${p + 1} / ${totalPages} (앞면 ${p + 1}쪽의 뒷면)</div></section>`);
+  }
+  await Promise.all([...document.images].map(img => img.complete ? null : new Promise(r => { img.onload = img.onerror = r; })));
+  document.body.dataset.ready = '1';
+})();
+</script>
+</body>
+</html>
