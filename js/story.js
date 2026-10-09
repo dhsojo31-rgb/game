@@ -20,6 +20,9 @@ export function renderStart(root, ctx) {
              <ul class="check-list">${errors.map(e => `<li>${e}</li>`).join('')}</ul>
              <div class="btn-row"><button class="btn small" id="btn-admin2">교사용 설정 열기</button></div>
            </div>`}
+      <div class="step-strip" aria-label="세 가지 게임 순서">
+        <span class="st"><i>🧩</i>퍼즐</span><span class="dots"></span><span class="st"><i>🔍</i>틀린그림</span><span class="dots"></span><span class="st"><i>📚</i>메모리</span>
+      </div>
       <div class="btn-row">
         <button class="btn small ghost" id="btn-sound" aria-pressed="${soundEnabled}">${soundEnabled ? '🔊 소리 켜짐' : '🔇 소리 꺼짐'}</button>
       </div>
