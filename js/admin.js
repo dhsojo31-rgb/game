@@ -1,6 +1,7 @@
 // 교사용 설정(A00): 도서 등록, 난이도별 도서 선택, 수정본·정답 영역 편집, 검증, 저장.
 import * as db from './db.js';
 import { validateConfig, validateLevel, diffsetStatus, hiddensetStatus, ensureLevels, LEVEL_SPEC } from './validate.js';
+import { OBJECTS, OBJECT_KEYS, objectSVG, objectName } from './objects.js';
 
 const esc = s => String(s ?? '').replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
 
@@ -163,12 +164,12 @@ export async function renderAdmin(root, ctx) {
           <button class="btn small danger" id="ad-hsdelitem" ${activeItem ? '' : 'disabled'}>선택한 물건 삭제</button>
           <button class="btn small ${hidTestMode ? 'primary' : 'ghost'}" id="ad-hstest">${hidTestMode ? '눌러보기 중 (편집으로 돌아가기)' : '미리보기: 직접 눌러보기'}</button>
         </div>
-        <p class="sub">물건 상자를 끌어서 옮기고 오른쪽 아래 동그라미로 크기를 바꿉니다. 아래 목록에서 물건 이름을 적으세요. 물건은 3~10개.</p>
+        <p class="sub">물건을 추가하면 표지 위에 물건 그림이 놓입니다. 끌어서 숨길 자리로 옮기고 오른쪽 아래 동그라미로 크기를 바꿉니다. 오른쪽 표에서 물건 종류를 고르세요(‘표지 속 그림’을 고르면 표지에 원래 있는 그림을 찾게 하고 이름을 직접 적습니다). 물건은 3~10개.</p>
         <div class="editor-pair">
-          <div class="region-editor" id="ad-hsimg">${hsURL ? `<img src="${hsURL}" alt="표지" draggable="false">` : '<div style="padding:40px;line-height:1.4">도서를 선택하세요</div>'}${hsURL ? hs.items.map((it, i) => `<div class="region ${activeItem === it.id ? 'active' : ''}" data-item="${it.id}" style="left:${it.x * 100}%;top:${it.y * 100}%;width:${it.width * 100}%;height:${it.height * 100}%"><span class="num">${i + 1} ${esc(it.name || '')}</span>${hidTestMode ? '' : '<span class="handle" data-handle></span>'}</div>`).join('') : ''}</div>
+          <div class="region-editor" id="ad-hsimg">${hsURL ? `<img src="${hsURL}" alt="표지" draggable="false">` : '<div style="padding:40px;line-height:1.4">도서를 선택하세요</div>'}${hsURL ? hs.items.map((it, i) => `<div class="region hid-region ${activeItem === it.id ? 'active' : ''}" data-item="${it.id}" style="left:${it.x * 100}%;top:${it.y * 100}%;width:${it.width * 100}%;height:${it.height * 100}%">${it.kind ? `<div class="hid-obj-prev" style="transform:rotate(${it.rot || 0}deg)">${objectSVG(it.kind)}</div>` : ''}<span class="num">${i + 1} ${esc(it.name || objectName(it.kind))}</span>${hidTestMode ? '' : '<span class="handle" data-handle></span>'}</div>`).join('') : ''}</div>
           <div style="flex:1;min-width:220px">
-            <table><thead><tr><th>#</th><th>물건 이름</th><th></th></tr></thead><tbody>
-              ${hs.items.map((it, i) => `<tr class="${activeItem === it.id ? 'row-active' : ''}"><td>${i + 1}</td><td><input type="text" data-hsname="${it.id}" value="${esc(it.name || '')}" placeholder="예: 시계" aria-label="물건 ${i + 1} 이름"></td><td><button class="btn small ghost" data-hssel="${it.id}">선택</button></td></tr>`).join('') || '<tr><td colspan="3">물건을 추가하세요.</td></tr>'}
+            <table><thead><tr><th>#</th><th>물건 종류</th><th>이름(표지 속 그림일 때)</th><th>회전</th><th></th></tr></thead><tbody>
+              ${hs.items.map((it, i) => `<tr class="${activeItem === it.id ? 'row-active' : ''}"><td>${i + 1}</td><td><select data-hskind="${it.id}" aria-label="물건 ${i + 1} 종류"><option value="" ${it.kind ? '' : 'selected'}>표지 속 그림</option>${OBJECT_KEYS.map(k => `<option value="${k}" ${it.kind === k ? 'selected' : ''}>${OBJECTS[k].name}</option>`).join('')}</select></td><td><input type="text" data-hsname="${it.id}" value="${esc(it.name || '')}" placeholder="${it.kind ? objectName(it.kind) : '예: 시계'}" aria-label="물건 ${i + 1} 이름" style="max-width:120px"></td><td><input type="number" data-hsrot="${it.id}" value="${it.rot || 0}" min="-180" max="180" step="15" style="width:64px" aria-label="회전 각도"></td><td><button class="btn small ghost" data-hssel="${it.id}">선택</button></td></tr>`).join('') || '<tr><td colspan="5">물건을 추가하세요.</td></tr>'}
             </tbody></table>
           </div>
         </div>
@@ -233,20 +234,23 @@ export async function renderAdmin(root, ctx) {
     q('#ad-hsadd').addEventListener('click', () => {
       if (hs.items.length >= 10) return;
       const n = hs.items.length;
-      const it = { id: db.uid('it'), name: '', x: Math.min(0.1 + (n % 5) * 0.16, 0.8), y: Math.min(0.1 + Math.floor(n / 5) * 0.3, 0.8), width: 0.14, height: 0.1 };
+      const kind = OBJECT_KEYS[n % OBJECT_KEYS.length];
+      const it = { id: db.uid('it'), kind, name: '', x: Math.min(0.1 + (n % 5) * 0.16, 0.8), y: Math.min(0.1 + Math.floor(n / 5) * 0.3, 0.8), width: 0.08, height: 0.06, rot: 0 };
       hs.items.push(it); hs.reviewed = false; activeItem = it.id; draw();
     });
     q('#ad-hsdelitem').addEventListener('click', () => { hs.items = hs.items.filter(it => it.id !== activeItem); hs.reviewed = false; activeItem = null; draw(); });
     q('#ad-hstest').addEventListener('click', () => { hidTestMode = !hidTestMode; activeItem = null; draw(); });
     root.querySelectorAll('[data-hsname]').forEach(inp => inp.addEventListener('change', () => { const it = hs.items.find(x => x.id === inp.dataset.hsname); if (it) { it.name = inp.value.trim(); hs.reviewed = false; const num = root.querySelector(`#ad-hsimg .region[data-item="${it.id}"] .num`); if (num) num.textContent = `${hs.items.indexOf(it) + 1} ${it.name}`; } }));
     root.querySelectorAll('[data-hssel]').forEach(btn => btn.addEventListener('click', () => { activeItem = btn.dataset.hssel; draw(); }));
+    root.querySelectorAll('[data-hskind]').forEach(sel => sel.addEventListener('change', () => { const it = hs.items.find(x => x.id === sel.dataset.hskind); if (it) { it.kind = sel.value || undefined; if (!it.kind) delete it.kind; hs.reviewed = false; activeItem = it.id; draw(); } }));
+    root.querySelectorAll('[data-hsrot]').forEach(inp => inp.addEventListener('change', () => { const it = hs.items.find(x => x.id === inp.dataset.hsrot); if (it) { it.rot = Number(inp.value) || 0; hs.reviewed = false; draw(); } }));
     const ed = q('#ad-hsimg'); const img = ed.querySelector('img'); if (!img) return;
     if (hidTestMode) {
       ed.addEventListener('click', e => {
         const rect = img.getBoundingClientRect();
         const rx = (e.clientX - rect.left) / rect.width, ry = (e.clientY - rect.top) / rect.height; const pad = 0.015;
         const hit = hs.items.findIndex(it => rx >= it.x - pad && rx <= it.x + it.width + pad && ry >= it.y - pad && ry <= it.y + it.height + pad);
-        q('#ad-hstestmsg').textContent = hit >= 0 ? `물건 ${hit + 1} (${hs.items[hit].name || '이름 없음'}) 판정 ✔` : '물건 아님';
+        q('#ad-hstestmsg').textContent = hit >= 0 ? `물건 ${hit + 1} (${hs.items[hit].name || objectName(hs.items[hit].kind) || '이름 없음'}) 판정 ✔` : '물건 아님';
       });
       return;
     }

@@ -73,7 +73,7 @@ export function hiddensetStatus(h, books) {
   items.forEach((it, i) => {
     const ok = [it.x, it.y, it.width, it.height].every(v => typeof v === 'number' && isFinite(v));
     if (!ok || it.width <= 0 || it.height <= 0 || it.x < 0 || it.y < 0 || it.x + it.width > 1.0001 || it.y + it.height > 1.0001) errs.push(`물건 ${i + 1}의 위치가 이미지 경계를 벗어났거나 크기가 잘못되었습니다.`);
-    if (!it.name || !String(it.name).trim()) errs.push(`물건 ${i + 1}의 이름을 적으세요.`);
+    if (!it.kind && (!it.name || !String(it.name).trim())) errs.push(`물건 ${i + 1}의 종류를 고르거나 이름을 적으세요.`);
   });
   if (new Set(items.map(it => it.id)).size !== items.length) errs.push('물건 ID가 중복되었습니다.');
   if (!h.reviewed) errs.push('교사 검수가 완료되지 않았습니다. 미리보기로 확인한 뒤 검수 완료에 표시하세요.');

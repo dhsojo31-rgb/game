@@ -121,16 +121,20 @@ async function importBundle(draft) {
     if (idx >= 0 && !refreshDiffs) continue;
     const book = books.find(b => b.id === h.bookId);
     if (!book) continue;
-    const hs = { id: h.id, bookId: h.bookId, originalAssetId: book.originalAssetId, items: h.items.map(it => ({ id: it.id, name: it.name, x: it.x, y: it.y, width: it.width, height: it.height })), reviewed: !!h.reviewed, isDemo: false };
+    const hs = { id: h.id, bookId: h.bookId, originalAssetId: book.originalAssetId, items: h.items.map(it => ({ id: it.id, kind: it.kind, name: it.name || '', x: it.x, y: it.y, width: it.width, height: it.height, rot: it.rot || 0 })), reviewed: !!h.reviewed, isDemo: false };
     if (idx >= 0) hiddensets[idx] = hs; else hiddensets.push(hs);
     if (!draft) await db.put('hiddensets', hs);
   }
   if (!draft) {
-    // 기존 브라우저에 숨은그림 구성이 비어 있으면 기본 구성에서 채운다(교사가 고른 다른 구성은 유지)
-    if (storedVersion < bundleVersion && m.config && m.config.levels) {
-      for (const k of Object.keys(m.config.levels)) {
+    if (storedVersion < bundleVersion) {
+      // 기본 제공 숨은그림 세트 중 manifest에서 빠진 것(hid-*)은 제거하고, 그 세트를 가리키던 선택은 기본 구성으로 바꾼다
+      const keep = new Set((m.hiddensets || []).map(h => h.id));
+      for (const h of hiddensets.slice()) if (!h.isDemo && /^hid-/.test(h.id) && !keep.has(h.id)) { await db.del('hiddensets', h.id); hiddensets.splice(hiddensets.indexOf(h), 1); }
+      if (m.config && m.config.levels) for (const k of Object.keys(m.config.levels)) {
         const lv = (data.config.levels || {})[k]; const src = m.config.levels[k];
-        if (lv && src && Array.isArray(src.hiddenSetIds) && (!Array.isArray(lv.hiddenSetIds) || lv.hiddenSetIds.every(v => !v))) lv.hiddenSetIds = src.hiddenSetIds.slice();
+        if (!lv || !src || !Array.isArray(src.hiddenSetIds)) continue;
+        const cur = Array.isArray(lv.hiddenSetIds) ? lv.hiddenSetIds : [];
+        if (cur.every(v => !v || !hiddensets.some(h => h.id === v))) lv.hiddenSetIds = src.hiddenSetIds.slice();
       }
     }
     const applyConfig = !data.config.bundleImported || storedVersion < 2; // 처음 가져올 때(또는 모드 구성이 없던 버전)만 기본 운영 구성을 적용

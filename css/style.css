@@ -199,6 +199,11 @@ img { -webkit-user-drag: none; user-select: none; }
 .hid-list-title { grid-column: 1 / -1; text-align: center; font-size: 15px; font-weight: 800; color: var(--brown); }
 .hid-item { position: relative; display: flex; flex-direction: column; align-items: center; gap: 2px; width: 78px; }
 .hid-thumb { width: 60px; max-height: 60px; border: 2px solid var(--line); border-radius: 8px; background-repeat: no-repeat; background-color: #fff; }
+.hid-thumb.obj { height: 60px; padding: 4px; }
+.hid-thumb.obj svg { width: 100%; height: 100%; display: block; }
+.hid-objs { position: absolute; inset: 0; pointer-events: none; }
+.hid-obj { position: absolute; opacity: .95; filter: drop-shadow(0 0 1px rgba(255,255,255,.9)); }
+.hid-obj svg { width: 100%; height: 100%; display: block; }
 .hid-name { font-size: 14px; font-weight: 700; color: var(--ink); text-align: center; line-height: 1.1; }
 .hid-check { position: absolute; left: 50%; top: 22px; transform: translateX(-50%); width: 30px; height: 30px; border-radius: 50%; background: var(--green); color: #fff; font-size: 18px; line-height: 30px; text-align: center; display: none; border: 2px solid #fff; }
 .hid-item.found .hid-thumb { opacity: .45; }
@@ -335,6 +340,9 @@ img { -webkit-user-drag: none; user-select: none; }
 .region.active { border-color: var(--blue); background: rgba(47,111,222,.18); }
 .region .num { position: absolute; left: 2px; top: 2px; background: var(--red); color: #fff; padding: 2px 6px; border-radius: 4px; font-weight: 700; }
 .region.active .num { background: var(--blue); }
+.hid-region { background: none; }
+.hid-region .hid-obj-prev { position: absolute; inset: 0; pointer-events: none; }
+.hid-region .hid-obj-prev svg { width: 100%; height: 100%; display: block; }
 .region .handle { position: absolute; right: -8px; bottom: -8px; width: 22px; height: 22px; background: #fff; border: 3px solid var(--blue); border-radius: 50%; cursor: nwse-resize; }
 .editor-pair { display: flex; gap: 14px; flex-wrap: wrap; align-items: flex-start; }
 

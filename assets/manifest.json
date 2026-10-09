@@ -1,5 +1,5 @@
 {
-  "version": 4,
+  "version": 6,
   "note": "사용자가 제공한 실제 책 표지. 제목·저자는 운영자가 확인한 정보다(2026-10-09).",
   "books": [
     {
@@ -274,7 +274,7 @@
           ]
         ],
         "hiddenSetIds": [
-          "hid-18"
+          "hid-20"
         ]
       },
       "hard": {
@@ -307,191 +307,211 @@
           ]
         ],
         "hiddenSetIds": [
-          "hid-18b",
-          "hid-13"
+          "hid-21",
+          "hid-22"
         ]
       }
     }
   },
   "hiddensets": [
     {
-      "id": "hid-18",
-      "bookId": "bk-18",
+      "id": "hid-20",
+      "bookId": "bk-20",
       "reviewed": true,
       "items": [
         {
-          "id": "h18-clock",
-          "name": "시계",
-          "x": 0.84,
-          "y": 0.44,
-          "width": 0.14,
-          "height": 0.1
+          "id": "h20-pencil",
+          "kind": "pencil",
+          "x": 0.56,
+          "y": 0.33,
+          "width": 0.09,
+          "height": 0.07,
+          "rot": 30
         },
         {
-          "id": "h18-star",
-          "name": "별 스티커",
-          "x": 0.535,
-          "y": 0.7,
-          "width": 0.115,
-          "height": 0.09
+          "id": "h20-scissors",
+          "kind": "scissors",
+          "x": 0.04,
+          "y": 0.4,
+          "width": 0.09,
+          "height": 0.07,
+          "rot": -20
         },
         {
-          "id": "h18-hat",
-          "name": "분홍 모자",
-          "x": 0.08,
-          "y": 0.77,
-          "width": 0.15,
-          "height": 0.1
+          "id": "h20-button",
+          "kind": "button",
+          "x": 0.52,
+          "y": 0.56,
+          "width": 0.055,
+          "height": 0.04,
+          "rot": 0
         },
         {
-          "id": "h18-dog",
-          "name": "강아지",
-          "x": 0.84,
-          "y": 0.82,
-          "width": 0.15,
-          "height": 0.14
-        },
-        {
-          "id": "h18-candy",
-          "name": "솜사탕",
-          "x": 0.895,
-          "y": 0.565,
-          "width": 0.105,
-          "height": 0.13
-        },
-        {
-          "id": "h18-wheel",
-          "name": "관람차",
-          "x": 0.8,
-          "y": 0.02,
-          "width": 0.19,
-          "height": 0.15
-        }
-      ]
-    },
-    {
-      "id": "hid-18b",
-      "bookId": "bk-18",
-      "reviewed": true,
-      "items": [
-        {
-          "id": "h18b-clock",
-          "name": "시계",
-          "x": 0.84,
-          "y": 0.44,
-          "width": 0.14,
-          "height": 0.1
-        },
-        {
-          "id": "h18b-star",
-          "name": "별 스티커",
-          "x": 0.535,
-          "y": 0.7,
-          "width": 0.115,
-          "height": 0.09
-        },
-        {
-          "id": "h18b-hat",
-          "name": "분홍 모자",
-          "x": 0.08,
-          "y": 0.77,
-          "width": 0.15,
-          "height": 0.1
-        },
-        {
-          "id": "h18b-dog",
-          "name": "강아지",
-          "x": 0.84,
-          "y": 0.82,
-          "width": 0.15,
-          "height": 0.14
-        },
-        {
-          "id": "h18b-candy",
-          "name": "솜사탕",
-          "x": 0.895,
-          "y": 0.565,
-          "width": 0.105,
-          "height": 0.13
-        },
-        {
-          "id": "h18b-wheel",
-          "name": "관람차",
-          "x": 0.8,
-          "y": 0.02,
-          "width": 0.19,
-          "height": 0.15
-        },
-        {
-          "id": "h18b-catballoon",
-          "name": "고양이 풍선",
-          "x": 0,
-          "y": 0.72,
-          "width": 0.12,
-          "height": 0.09
-        },
-        {
-          "id": "h18b-planet",
-          "name": "행성 스티커",
-          "x": 0.585,
-          "y": 0.715,
+          "id": "h20-key",
+          "kind": "key",
+          "x": 0.86,
+          "y": 0.47,
           "width": 0.08,
-          "height": 0.065
+          "height": 0.06,
+          "rot": 40
+        },
+        {
+          "id": "h20-apple",
+          "kind": "apple",
+          "x": 0.7,
+          "y": 0.9,
+          "width": 0.07,
+          "height": 0.05,
+          "rot": 0
+        },
+        {
+          "id": "h20-sock",
+          "kind": "sock",
+          "x": 0.26,
+          "y": 0.93,
+          "width": 0.07,
+          "height": 0.06,
+          "rot": 20
         }
       ]
     },
     {
-      "id": "hid-13",
-      "bookId": "bk-13",
+      "id": "hid-21",
+      "bookId": "bk-21",
       "reviewed": true,
       "items": [
         {
-          "id": "h13-headphone",
-          "name": "빨간 헤드폰",
-          "x": 0.17,
-          "y": 0.235,
-          "width": 0.25,
-          "height": 0.125
+          "id": "h21-glasses",
+          "kind": "glasses",
+          "x": 0.04,
+          "y": 0.74,
+          "width": 0.1,
+          "height": 0.05,
+          "rot": 0
         },
         {
-          "id": "h13-redcap",
-          "name": "빨간 모자",
-          "x": 0.4,
-          "y": 0.22,
-          "width": 0.22,
-          "height": 0.12
-        },
-        {
-          "id": "h13-glasses",
-          "name": "빙글빙글 안경",
-          "x": 0.21,
-          "y": 0.51,
-          "width": 0.15,
-          "height": 0.09
-        },
-        {
-          "id": "h13-gamepad",
-          "name": "게임기",
-          "x": 0.24,
+          "id": "h21-eraser",
+          "kind": "eraser",
+          "x": 0.72,
           "y": 0.6,
-          "width": 0.11,
-          "height": 0.07
+          "width": 0.08,
+          "height": 0.05,
+          "rot": 15
         },
         {
-          "id": "h13-notes",
-          "name": "음표",
-          "x": 0.05,
-          "y": 0.78,
-          "width": 0.19,
-          "height": 0.12
+          "id": "h21-book",
+          "kind": "book",
+          "x": 0.86,
+          "y": 0.86,
+          "width": 0.07,
+          "height": 0.06,
+          "rot": 0
         },
         {
-          "id": "h13-bird",
-          "name": "노란 새",
-          "x": 0.8,
-          "y": 0.87,
-          "width": 0.19,
-          "height": 0.12
+          "id": "h21-star",
+          "kind": "star",
+          "x": 0.46,
+          "y": 0.28,
+          "width": 0.06,
+          "height": 0.045,
+          "rot": 0
+        },
+        {
+          "id": "h21-cup",
+          "kind": "cup",
+          "x": 0.9,
+          "y": 0.72,
+          "width": 0.06,
+          "height": 0.06,
+          "rot": 0
+        },
+        {
+          "id": "h21-umbrella",
+          "kind": "umbrella",
+          "x": 0.06,
+          "y": 0.56,
+          "width": 0.08,
+          "height": 0.07,
+          "rot": -10
+        },
+        {
+          "id": "h21-fish",
+          "kind": "fish",
+          "x": 0.3,
+          "y": 0.86,
+          "width": 0.08,
+          "height": 0.05,
+          "rot": 10
+        },
+        {
+          "id": "h21-hat",
+          "kind": "hat",
+          "x": 0.84,
+          "y": 0.08,
+          "width": 0.08,
+          "height": 0.05,
+          "rot": 0
+        }
+      ]
+    },
+    {
+      "id": "hid-22",
+      "bookId": "bk-22",
+      "reviewed": true,
+      "items": [
+        {
+          "id": "h22-ruler",
+          "kind": "ruler",
+          "x": 0.04,
+          "y": 0.6,
+          "width": 0.09,
+          "height": 0.07,
+          "rot": 10
+        },
+        {
+          "id": "h22-spatula",
+          "kind": "spatula",
+          "x": 0.88,
+          "y": 0.4,
+          "width": 0.08,
+          "height": 0.08,
+          "rot": -20
+        },
+        {
+          "id": "h22-button",
+          "kind": "button",
+          "x": 0.5,
+          "y": 0.66,
+          "width": 0.06,
+          "height": 0.045,
+          "rot": 0
+        },
+        {
+          "id": "h22-key",
+          "kind": "key",
+          "x": 0.06,
+          "y": 0.84,
+          "width": 0.08,
+          "height": 0.06,
+          "rot": 30
+        },
+        {
+          "id": "h22-pencil",
+          "kind": "pencil",
+          "x": 0.74,
+          "y": 0.52,
+          "width": 0.08,
+          "height": 0.06,
+          "rot": -35
+        },
+        {
+          "id": "h22-star",
+          "kind": "star",
+          "x": 0.44,
+          "y": 0.33,
+          "width": 0.06,
+          "height": 0.045,
+          "rot": 0
         }
       ]
     }
