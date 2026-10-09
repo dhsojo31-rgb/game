@@ -115,7 +115,7 @@ img { -webkit-user-drag: none; user-select: none; }
 .step-strip { display: flex; align-items: center; justify-content: center; gap: 12px; margin-top: 18px; background: rgba(255,255,255,.85); border-radius: 999px; padding: 8px 26px; border: 2px solid var(--line); }
 .step-strip .st { display: flex; flex-direction: column; align-items: center; font-size: 16px; font-weight: 700; color: var(--brown); }
 .step-strip .st i { font-style: normal; font-size: 34px; line-height: 1.1; }
-.step-strip .dots { width: 64px; border-top: 4px dotted #c9a56a; }
+.step-strip .dots { width: 48px; border-top: 4px dotted #c9a56a; }
 
 /* ---------- 도입 만화 ---------- */
 .comic { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; width: 100%; max-width: 1000px; }
@@ -393,9 +393,10 @@ img { -webkit-user-drag: none; user-select: none; }
   .start-moa { width: 120px; height: 158px; }
   .level-btn { min-width: 0; width: 100%; padding: 10px 18px; }
   .level-row { gap: 10px; width: 100%; }
-  .step-strip { margin-top: 10px; padding: 6px 16px; gap: 8px; }
-  .step-strip .st i { font-size: 28px; }
-  .step-strip .dots { width: 36px; }
+  .step-strip { margin-top: 10px; padding: 6px 12px; gap: 6px; }
+  .step-strip .st { font-size: 14px; }
+  .step-strip .st i { font-size: 26px; }
+  .step-strip .dots { width: 22px; }
   /* 퍼즐: 판은 폭을 꽉 채우되 보관함이 같은 화면에 들어오도록 높이로 제한 */
   .puzzle-layout { gap: 10px; }
   .puzzle-layout .board { width: min(94vw, calc(44vh * var(--ratio))); }
@@ -450,10 +451,10 @@ img { -webkit-user-drag: none; user-select: none; }
   .level-btn .lv-desc { font-size: 12px; }
   .btn-row { margin-top: 6px; }
   .footer-links { padding-top: 6px; }
-  .step-strip { margin-top: 6px; padding: 2px 16px; gap: 8px; }
+  .step-strip { margin-top: 6px; padding: 2px 14px; gap: 6px; }
   .step-strip .st { flex-direction: row; gap: 4px; font-size: 14px; }
   .step-strip .st i { font-size: 20px; }
-  .step-strip .dots { width: 36px; }
+  .step-strip .dots { width: 26px; }
   /* 퍼즐: 판은 높이에 맞추고 보관함은 옆에 */
   .puzzle-layout { flex-wrap: nowrap; gap: 12px; align-items: flex-start; }
   .puzzle-layout .board { width: calc(68vh * var(--ratio)); flex: none; }
