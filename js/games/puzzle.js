@@ -36,7 +36,7 @@ export function renderPuzzle(root, ctx) {
         </div>
         <div class="help-area">
           <span class="progress" id="pz-progress">붙인 조각 ${st.placed.filter(Boolean).length}/${N}</span>
-          <button class="btn small ghost" id="pz-hint">💡 도와줘</button>
+          <button class="btn small ghost" id="pz-hint">${ctx.hints.label()}</button>
         </div>
       </div>
     </div>
@@ -163,8 +163,13 @@ export function renderPuzzle(root, ctx) {
   root.addEventListener('pointercancel', onUp);
 
   // ---- 도움 ----
-  root.querySelector('#pz-hint').addEventListener('click', () => {
+  const hintBtn = root.querySelector('#pz-hint');
+  const syncHint = () => { hintBtn.textContent = ctx.hints.label(); hintBtn.disabled = ctx.hints.left() <= 0; };
+  syncHint();
+  hintBtn.addEventListener('click', () => {
     if (st.locked) return;
+    if (!ctx.hints.use()) { syncHint(); return; }
+    syncHint();
     let p = st.selected;
     if (p === null || st.placed[p]) { p = st.order.find(i => !st.placed[i]); if (p === undefined) return; }
     const piece = tray.querySelector(`[data-piece="${p}"]`);

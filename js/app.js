@@ -22,7 +22,7 @@ function newSession() {
   seq += 1;
   session = {
     id: seq, timers: new Set(), screen: 'S00', level: 'easy', stage: 0, clues: [], completed: false, runtime: null,
-    rounds: { puzzle: 0, diff: 0, memory: 0 }, puzzle: null, diff: null, memory: null, ending: null,
+    rounds: { puzzle: 0, diff: 0, memory: 0 }, hints: { puzzle: 0, diff: 0, memory: 0 }, puzzle: null, diff: null, memory: null, ending: null,
   };
   return session;
 }
@@ -137,7 +137,7 @@ async function resolveRuntime(level) {
     ? { puzzleBookIds: [DEMO_BOOK_IDS[0]], differenceSetIds: [DEMO_DIFF_ID], memoryRounds: [DEMO_BOOK_IDS.slice()] }
     : cfg.levels[level];
   const url = async id => { const u = await db.getAssetURL(id); if (!u || !(await db.verifyImageURL(u))) throw new Error('이미지를 열 수 없습니다. 운영자에게 알려 주세요.'); return u; };
-  const rt = { level, isDemo, previewMs: spec.previewMs, puzzles: [], diffs: [], memoryRounds: [], usedBooks: [] };
+  const rt = { level, isDemo, previewMs: spec.previewMs, hintsPerStage: spec.hintsPerStage, puzzles: [], diffs: [], memoryRounds: [], usedBooks: [] };
   const used = [];
   for (const id of lv.puzzleBookIds) {
     const b = bookById(id); if (!b) throw new Error('퍼즐 도서가 부족합니다.');
@@ -201,7 +201,7 @@ function bindTopbar() {
 const GUARD = { S01: 0, S02: 0, S03: 1, S04: 1, S05: 2, S06: 2, S07: 3, S08: 3, S09: 3 };
 
 async function startLevel(level) {
-  try { session.runtime = await resolveRuntime(level); session.level = level; go('S01'); }
+  try { session.runtime = await resolveRuntime(level); session.level = level; resetHints(); go('S01'); }
   catch (e) { showModal(`<p class="msg-err">${e.message}</p><p class="sub">운영자가 교사용 설정에서 자료를 확인해 주세요.</p><div class="btn-row"><button class="btn" data-close>닫기</button></div>`); }
 }
 
@@ -259,17 +259,17 @@ async function go(screen) {
   else if (screen === 'S02') {
     const p = rt.puzzles[session.rounds.puzzle];
     const grid = (rt.isDemo ? [2, 3] : ((LEVEL_SPEC[rt.level].puzzleGrids || [])[session.rounds.puzzle] || [2, 3]));
-    renderPuzzle(body, { session, later, sfx, url: p.url, width: p.width, height: p.height, cols: grid[0], rows: grid[1], roundLabel: roundLabel('puzzle'), onComplete: () => roundDone('puzzle', 'S02', 1, 'blue', 'S03') });
+    renderPuzzle(body, { session, later, sfx, url: p.url, width: p.width, height: p.height, cols: grid[0], rows: grid[1], roundLabel: roundLabel('puzzle'), hints: hintApi('puzzle'), onComplete: () => roundDone('puzzle', 'S02', 1, 'blue', 'S03') });
   }
   else if (screen === 'S03') renderClue(body, { clueKey: 'blue', clues: session.clues, onNext: () => go('S04') });
   else if (screen === 'S04') {
     const d = rt.diffs[session.rounds.diff];
-    renderDiff(body, { session, later, sfx, originalURL: d.originalURL, modifiedURL: d.modifiedURL, regions: d.regions, roundLabel: roundLabel('diff'), onComplete: () => roundDone('diff', 'S04', 2, 'star', 'S05') });
+    renderDiff(body, { session, later, sfx, originalURL: d.originalURL, modifiedURL: d.modifiedURL, regions: d.regions, roundLabel: roundLabel('diff'), hints: hintApi('diff'), onComplete: () => roundDone('diff', 'S04', 2, 'star', 'S05') });
   }
   else if (screen === 'S05') renderClue(body, { clueKey: 'star', clues: session.clues, onNext: () => go('S06') });
   else if (screen === 'S06') {
     const books = rt.memoryRounds[session.rounds.memory];
-    renderMemory(body, { session, later, sfx, books, previewMs: rt.previewMs, roundLabel: roundLabel('memory'), onComplete: () => roundDone('memory', 'S06', 3, 'box', 'S07') });
+    renderMemory(body, { session, later, sfx, books, previewMs: rt.previewMs, roundLabel: roundLabel('memory'), hints: hintApi('memory'), onComplete: () => roundDone('memory', 'S06', 3, 'box', 'S07') });
   }
   else if (screen === 'S07') renderClue(body, { clueKey: 'box', clues: session.clues, onNext: () => go('S08') });
   else if (screen === 'S08') renderEnding(body, { session, later, sfx, onOpened: () => { session.completed = true; }, onBooks: () => go('S09') });
@@ -308,7 +308,7 @@ const CLUE_ORDER = ['blue', 'star', 'box'];
 async function jumpTo(target) {
   if (target.screen === 'S00') { resetSession(); return; }
   if (!session.runtime) {
-    try { session.runtime = await resolveRuntime(inspectLevel); session.level = inspectLevel; }
+    try { session.runtime = await resolveRuntime(inspectLevel); session.level = inspectLevel; resetHints(); }
     catch (e) { showModal(`<p class="msg-err">${e.message}</p><div class="btn-row"><button class="btn" data-close>닫기</button></div>`); return; }
   }
   const stage = STAGE_NEEDED[target.screen];
@@ -319,6 +319,7 @@ async function jumpTo(target) {
   if (target.kind === 'diff') session.rounds.puzzle = session.runtime.puzzles.length - 1;
   if (target.kind === 'memory') { session.rounds.puzzle = session.runtime.puzzles.length - 1; session.rounds.diff = session.runtime.diffs.length - 1; }
   session.puzzle = null; session.diff = null; session.memory = null; session.ending = null;
+  resetHints();
   session.completed = target.screen === 'S09';
   for (const t of session.timers) clearTimeout(t); session.timers.clear();
   go(target.screen);
@@ -441,6 +442,19 @@ function roundDone(kind, screen, stageNo, clue, next) {
     return;
   }
   advance(stageNo, clue, next);
+}
+
+/** 단계별 도와줘 횟수: 쉬운 모드 2번, 어려운 모드 3번 (단계 안의 모든 판을 합쳐 셈) */
+function resetHints() {
+  const n = session.runtime ? session.runtime.hintsPerStage : 0;
+  session.hints = { puzzle: n, diff: n, memory: n };
+}
+function hintApi(kind) {
+  return {
+    left: () => session.hints[kind],
+    use: () => { if (session.hints[kind] <= 0) return false; session.hints[kind] -= 1; return true; },
+    label: () => { const n = session.hints[kind]; return n > 0 ? `💡 도와줘 (${n}번 남음)` : '💡 도와줘 (다 썼어요)'; },
+  };
 }
 
 /** 단계 완료: 같은 세션에서 한 번만 단서를 지급하고 다음 화면으로 */

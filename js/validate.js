@@ -2,8 +2,8 @@
 
 /** 난이도별 구성 규격 */
 export const LEVEL_SPEC = {
-  easy: { key: 'easy', name: '쉬운 모드', puzzles: 1, puzzleGrids: [[2, 3]], diffs: 1, memory: [4], previewMs: 3000, desc: '퍼즐 1 · 틀린그림 1 · 카드 8장' },
-  hard: { key: 'hard', name: '어려운 모드', puzzles: 3, puzzleGrids: [[2, 3], [2, 3], [3, 3]], diffs: 3, memory: [6, 6], previewMs: 4000, desc: '퍼즐 3(마지막 9조각) · 틀린그림 3 · 카드 12장 × 2판' },
+  easy: { key: 'easy', name: '쉬운 모드', hintsPerStage: 2, puzzles: 1, puzzleGrids: [[2, 3]], diffs: 1, memory: [4], previewMs: 3000, desc: '퍼즐 1 · 틀린그림 1 · 카드 8장' },
+  hard: { key: 'hard', name: '어려운 모드', hintsPerStage: 3, puzzles: 3, puzzleGrids: [[2, 3], [2, 3], [3, 3]], diffs: 3, memory: [6, 6], previewMs: 4000, desc: '퍼즐 3(마지막 9조각) · 틀린그림 3 · 카드 12장 × 2판' },
 };
 
 export function emptyLevel(spec) {

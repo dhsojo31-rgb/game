@@ -16,7 +16,7 @@ export function renderDiff(root, ctx) {
     </div>
     <div class="help-area">
       <span class="progress" id="df-progress">찾은 곳 ${st.found.length}/${regions.length}</span>
-      <button class="btn small ghost" id="df-hint">💡 도와줘</button>
+      <button class="btn small ghost" id="df-hint">${ctx.hints.label()}</button>
     </div>
     <div class="feedback" id="df-feedback"></div>`;
 
@@ -79,10 +79,15 @@ export function renderDiff(root, ctx) {
     later(() => ctx.onComplete(), 1400);
   }
 
-  root.querySelector('#df-hint').addEventListener('click', () => {
+  const hintBtn = root.querySelector('#df-hint');
+  const syncHint = () => { hintBtn.textContent = ctx.hints.label(); hintBtn.disabled = ctx.hints.left() <= 0; };
+  syncHint();
+  hintBtn.addEventListener('click', () => {
     if (st.locked || st.done) return;
     const r = regions.find(x => !st.found.includes(x.id));
     if (!r) return;
+    if (!ctx.hints.use()) { syncHint(); return; }
+    syncHint();
     root.querySelectorAll('.mark.ring').forEach(m => m.remove());
     drawMark(r, 'ring');
     say('반짝이는 곳을 자세히 봐요.');

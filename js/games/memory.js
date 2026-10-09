@@ -32,7 +32,7 @@ export function renderMemory(root, ctx) {
     </div>
     <div class="help-area">
       <span class="progress" id="mm-progress">찾은 짝 ${st.found}/${total}</span>
-      <button class="btn small ghost" id="mm-hint">💡 도와줘</button>
+      <button class="btn small ghost" id="mm-hint">${ctx.hints.label()}</button>
     </div>
     <div class="feedback" id="mm-feedback"></div>`;
 
@@ -52,7 +52,8 @@ export function renderMemory(root, ctx) {
       el.classList.toggle('open', !matched && (st.open.includes(i) || st.previewing || st.hinting));
       el.disabled = matched || st.previewing || st.hinting || st.lock;
     });
-    hintBtn.disabled = st.previewing || st.hinting || st.lock || st.done;
+    hintBtn.disabled = st.previewing || st.hinting || st.lock || st.done || ctx.hints.left() <= 0;
+    hintBtn.textContent = ctx.hints.label();
     subEl.innerHTML = st.previewing ? '<span class="pv-badge">미리보기</span> 먼저 표지를 살펴봐요.' : '카드 두 장을 눌러 같은 표지를 찾아요.';
     progress.textContent = `찾은 짝 ${st.found}/${total}`;
   }
@@ -90,6 +91,7 @@ export function renderMemory(root, ctx) {
 
   hintBtn.addEventListener('click', () => {
     if (st.previewing || st.hinting || st.lock || st.done) return;
+    if (!ctx.hints.use()) { sync(); return; }
     st.open = []; // 한 장만 열린 상태면 선택 해제
     st.hinting = true; sync(); say('남은 카드를 잘 봐 두세요!');
     later(() => { st.hinting = false; st.open = []; sync(); say(''); }, HINT_MS);
