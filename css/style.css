@@ -314,3 +314,110 @@ img { -webkit-user-drag: none; user-select: none; }
 @keyframes shake { 0%,100% { transform: translateX(0); } 25% { transform: translateX(-6px); } 75% { transform: translateX(6px); } }
 @keyframes fade { to { opacity: 0; } }
 @media (prefers-reduced-motion: reduce) { * { animation: none !important; transition: none !important; } }
+
+/* ---------- 핸드폰 세로 (폭 700px 이하) ---------- */
+@media (max-width: 700px) and (orientation: portrait) {
+  .topbar { padding: 6px 8px; gap: 6px; }
+  .steps { gap: 6px; }
+  .step { font-size: 14px; padding: 4px 9px; gap: 5px; }
+  .step .ico { font-size: 17px; }
+  .step .stamp { width: 20px; height: 20px; line-height: 16px; font-size: 12px; }
+  .icon-btn { width: 40px; height: 40px; font-size: 19px; }
+  .screen { padding: 8px 10px 12px; }
+  .guide { margin: 2px 0 8px; }
+  .guide .gt { font-size: 24px; }
+  .guide .gs { font-size: 16px; }
+  .round-label { font-size: 15px; padding: 0 9px; }
+  .progress { font-size: 19px; padding: 5px 14px; }
+  .help-area { margin-top: 8px; gap: 10px; }
+  .feedback { font-size: 17px; min-height: 24px; margin: 4px 0; }
+  .title-main { font-size: 38px; }
+  .start-moa { width: 120px; height: 158px; }
+  .level-btn { min-width: 0; width: 100%; padding: 10px 18px; }
+  .level-row { gap: 10px; width: 100%; }
+  /* 퍼즐: 판은 폭을 꽉 채우되 보관함이 같은 화면에 들어오도록 높이로 제한 */
+  .puzzle-layout { gap: 10px; }
+  .puzzle-layout .board { width: min(94vw, calc(44vh * var(--ratio))); }
+  .side { display: grid; grid-template-columns: 84px 1fr; gap: 8px; width: 94vw; align-items: start; }
+  .preview-mini { width: 84px; }
+  .preview-mini .lab { font-size: 12px; }
+  .side .tray { width: auto; min-width: 0; gap: 6px; }
+  .side .help-area { grid-column: 1 / -1; }
+  /* 틀린그림: 두 장을 위아래로, 한 화면에 들어오게 */
+  .diff-layout { gap: 8px; }
+  .diff-col { gap: 3px; }
+  .diff-col .lab { font-size: 15px; }
+  .diff-wrap img { max-width: 94vw; max-height: 33vh; }
+  /* 메모리: 폭을 꽉 채움 (4열) */
+  .memory-grid { width: 94vw; min-width: 0; gap: 8px; }
+  .clue-big { width: 150px; height: 150px; }
+  .notebook { gap: 8px; padding: 10px; }
+  .notebook .slotc { width: 92px; height: 108px; font-size: 15px; }
+  .notebook .slotc svg { width: 60px; height: 60px; }
+  .moa-say .moa { width: 56px; height: 74px; }
+  .bubble { font-size: 18px; padding: 8px 14px; }
+  .book-grid { grid-template-columns: repeat(3, 1fr); gap: 10px; }
+  .book-tile .t { font-size: 14px; }
+  .comic { gap: 10px; }
+  .panel .cap { font-size: 17px; min-height: 0; }
+}
+
+/* ---------- 핸드폰 가로 (높이 520px 이하) ---------- */
+@media (max-height: 520px) and (orientation: landscape) {
+  .topbar { padding: 4px 10px; }
+  .step { font-size: 13px; padding: 3px 8px; gap: 4px; }
+  .step .ico { font-size: 15px; }
+  .step .stamp { width: 18px; height: 18px; line-height: 14px; font-size: 11px; }
+  .icon-btn { width: 36px; height: 36px; font-size: 17px; }
+  .screen { padding: 4px 10px 8px; }
+  .guide { margin: 0 0 4px; }
+  .guide .gt { font-size: 20px; display: inline; }
+  .guide .gs { font-size: 14px; display: inline; margin-left: 8px; }
+  .round-label { font-size: 13px; padding: 0 8px; }
+  .progress { font-size: 16px; padding: 3px 12px; }
+  .help-area { margin-top: 4px; gap: 8px; }
+  .help-area .btn.small { min-height: 36px; font-size: 15px; padding: 4px 12px; }
+  .feedback { font-size: 15px; min-height: 20px; margin: 2px 0; }
+  /* 시작 화면: 한 화면에 */
+  .start-moa { width: 70px; height: 92px; }
+  .title-main { font-size: 28px; margin: 2px 0 0; }
+  .title-sub { font-size: 16px; margin: 0 0 6px; }
+  .screen.center .sub { font-size: 15px; margin: 0; }
+  .level-row { margin-top: 6px; gap: 10px; }
+  .level-btn { min-width: 0; padding: 6px 18px; min-height: 48px; }
+  .level-btn .lv-name { font-size: 19px; }
+  .level-btn .lv-desc { font-size: 12px; }
+  .btn-row { margin-top: 6px; }
+  .footer-links { padding-top: 6px; }
+  /* 퍼즐: 판은 높이에 맞추고 보관함은 옆에 */
+  .puzzle-layout { flex-wrap: nowrap; gap: 12px; align-items: flex-start; }
+  .puzzle-layout .board { width: calc(68vh * var(--ratio)); flex: none; }
+  .side { display: grid; grid-template-columns: 64px minmax(0, 1fr); gap: 8px; width: min(50vw, 480px); align-items: start; }
+  .preview-mini { width: 64px; }
+  .preview-mini .lab { font-size: 11px; }
+  .side .tray { width: auto; min-width: 0; gap: 5px; padding: 0; }
+  .side .help-area { grid-column: 1 / -1; }
+  /* 틀린그림: 두 장 나란히, 높이에 맞춤 */
+  .diff-layout { gap: 10px; flex-wrap: nowrap; }
+  .diff-col { gap: 2px; }
+  .diff-col .lab { font-size: 13px; }
+  .diff-wrap img { max-width: 46vw; max-height: 55vh; }
+  /* 메모리: 높이에 맞춰 카드판 폭 계산 (카드 3:4) */
+  .memory-grid { width: min(94vw, calc((100vh - 150px) * var(--cols) * 0.375)); min-width: 0; gap: 6px; grid-template-columns: repeat(var(--cols), 1fr) !important; }
+  .clue-big { width: 84px; height: 84px; }
+  .screen.center > .sub { font-size: 14px; margin: 2px 0; }
+  .notebook { gap: 8px; padding: 6px 10px; margin: 6px 0; }
+  .notebook .slotc { width: 76px; height: 86px; font-size: 13px; gap: 2px; }
+  .notebook .slotc svg { width: 46px; height: 46px; }
+  .moa-say { margin: 4px 0; }
+  .moa-say .moa { width: 48px; height: 64px; }
+  .bubble { font-size: 16px; padding: 6px 12px; }
+  .screen.center h2 { font-size: 22px; margin: 0; }
+  .ending-scene, .box-btn { width: min(60vw, 68vh, 420px); }
+  #celebrate svg { width: 90px; height: 90px; }
+  .book-grid { grid-template-columns: repeat(6, 1fr); gap: 8px; }
+  .book-tile .t { font-size: 13px; }
+  .comic { gap: 8px; }
+  .panel { padding: 6px; }
+  .panel .cap { font-size: 14px; min-height: 0; margin-top: 4px; }
+}
