@@ -28,6 +28,11 @@
 | `docs/교사용_운영안내.md` | 현장 운영 절차 |
 | `docs/검수결과.md` | QA 항목별 확인 결과 |
 
+## 공개 주소
+
+- https://dhsojo31-rgb.github.io/game/ (GitHub Pages, 기본)
+- https://game-five-ochre-48.vercel.app (Vercel, 예비). main 브랜치에 푸시하면 둘 다 자동 배포된다.
+
 ## 동작 개요
 
 - 처음 열면 `assets/manifest.json`의 표지를 브라우저 저장소(IndexedDB)로 가져오고, 실제 표지 운영 구성으로 시작한다.
