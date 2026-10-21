@@ -9,6 +9,7 @@ import { renderMemory } from './games/memory.js';
 import { renderHidden } from './games/hidden.js';
 import { renderStart, renderIntro, renderClue, renderEnding, renderBooks } from './story.js';
 import { renderAdmin } from './admin.js';
+import { enterFullscreen } from './fullscreen.js';
 
 const app = document.getElementById('app');
 const modalRoot = document.getElementById('modal-root');
@@ -511,16 +512,9 @@ function advance(stageNo, clue, next) {
 }
 
 // ---------- 전체화면(태블릿) ----------
-// 터치할 때마다 전체화면이 아니면 다시 들어가고 가로로 고정한다. 마우스(PC)에서는 동작하지 않는다.
-function enterFullscreen(e) {
-  if (e.pointerType !== 'touch' || document.fullscreenElement) return;
-  const el = document.documentElement;
-  if (!el.requestFullscreen) return;
-  el.requestFullscreen({ navigationUI: 'hide' })
-    .then(() => screen.orientation?.lock?.('landscape'))
-    .catch(() => {});
-}
-document.addEventListener('pointerup', enterFullscreen);
+// 터치할 때마다 전체화면이 아니면 다시 들어간다. 마우스(PC)는 시작 화면의 전체화면 버튼으로.
+document.addEventListener('pointerup', e => { if (e.pointerType === 'touch' && !e.target.closest?.('#btn-fullscreen')) enterFullscreen(); });
+document.addEventListener('touchend', e => { if (!e.target.closest?.('#btn-fullscreen')) enterFullscreen(); });
 
 // ---------- 시작 ----------
 async function boot() {

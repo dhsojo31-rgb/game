@@ -1,5 +1,6 @@
 // 이야기 화면: 시작, 사건 소개, 단서 획득, 사건 해결, 오늘 만난 책
 import { moaSVG, clueSVG, CLUES, introPanelSVG, endingSceneSVG, badgeSVG } from './art.js';
+import { isFullscreen, enterFullscreen, exitFullscreen } from './fullscreen.js';
 
 export function renderStart(root, ctx) {
   const { ready, errors, isDemo, soundEnabled } = ctx;
@@ -25,6 +26,7 @@ export function renderStart(root, ctx) {
       </div>
       <div class="btn-row">
         <button class="btn small ghost" id="btn-sound" aria-pressed="${soundEnabled}">${soundEnabled ? '🔊 소리 켜짐' : '🔇 소리 꺼짐'}</button>
+        <button class="btn small ghost" id="btn-fullscreen">${isFullscreen() ? '↙ 전체화면 끄기' : '⛶ 전체화면'}</button>
       </div>
       <div class="footer-links">
         <button id="btn-admin">교사용 설정</button>
@@ -33,6 +35,10 @@ export function renderStart(root, ctx) {
     </section>`;
   root.querySelectorAll('[data-level]').forEach(b => b.addEventListener('click', () => ctx.onStart(b.dataset.level)));
   root.querySelector('#btn-sound').addEventListener('click', ctx.onToggleSound);
+  const fsBtn = root.querySelector('#btn-fullscreen');
+  fsBtn.addEventListener('click', () => (isFullscreen() ? exitFullscreen() : enterFullscreen()).then(() => {
+    fsBtn.textContent = isFullscreen() ? '↙ 전체화면 끄기' : '⛶ 전체화면';
+  }));
   root.querySelector('#btn-admin').addEventListener('click', ctx.onAdmin);
   root.querySelector('#btn-inspect')?.addEventListener('click', ctx.onInspect);
   root.querySelector('#btn-admin2')?.addEventListener('click', ctx.onAdmin);
